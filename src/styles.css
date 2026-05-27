@@ -87,6 +87,51 @@
   --shadow-card: 0 20px 60px oklch(0 0 0 / 0.5);
 }
 
+/* ===== 2026 Web Platform Features ===== */
+
+/* View Transitions API — smooth crossfade between pages */
+@view-transition {
+  navigation: auto;
+}
+
+/* Scroll-driven animations — reveal sections on scroll without JS */
+@keyframes fade-in-up {
+  from { opacity: 0; translate: 0 30px; }
+  to { opacity: 1; translate: 0 0; }
+}
+
+@keyframes scale-in {
+  from { opacity: 0; scale: 0.9; }
+  to { opacity: 1; scale: 1; }
+}
+
+.reveal-on-scroll {
+  animation: fade-in-up linear both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 30%;
+}
+
+.reveal-scale {
+  animation: scale-in linear both;
+  animation-timeline: view();
+  animation-range: entry 0% entry 25%;
+}
+
+/* @starting-style — entry animations without JavaScript */
+@starting-style {
+  .from-below {
+    opacity: 0;
+    translate: 0 20px;
+  }
+}
+
+/* CSS container queries — responsive without media queries */
+@container style(--is-wide: true) {
+  .grid-auto-fill {
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  }
+}
+
 @layer base {
   * { border-color: var(--color-border); }
   body {
@@ -94,7 +139,10 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    /* Optimize page rendering with content-visibility */
+    content-visibility: auto;
   }
+  /* Headings with interpolate-size for smooth font-size transitions */
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     letter-spacing: 0.01em;
@@ -135,8 +183,67 @@
     opacity: 0.05;
     background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' /></filter><rect width='100%25' height='100%25' filter='url(%23n)' /></svg>");
   }
+
+  /* 2026 Form Features */
+  .field-auto {
+    field-sizing: content;
+  }
+
+  /* Content-visibility for below-fold performance */
+  .lazy-section {
+    content-visibility: auto;
+    contain-intrinsic-size: 500px;
+  }
+
+  /* Interpolate-size for smooth height transitions */
+  .smooth-expand {
+    interpolate-size: allow-keywords;
+  }
+
+  /* Native popover styling */
+  .popover-native {
+    position: fixed;
+    inset: auto;
+    bottom: 6rem;
+    right: 1.5rem;
+    margin: 0;
+    border: 1px solid oklch(0.78 0.14 80 / 0.3);
+    border-radius: 16px;
+    background: oklch(0.18 0.015 70 / 0.95);
+    padding: 0.75rem;
+    color: oklch(0.97 0.01 80);
+    backdrop-filter: blur(16px);
+    box-shadow: 0 20px 60px oklch(0 0 0 / 0.5);
+    max-width: 200px;
+    overflow: visible;
+    /* Popover animation via @starting-style */
+    opacity: 0;
+    translate: 0 10px;
+    transition: opacity 0.2s, translate 0.2s, display 0.2s allow-discrete;
+  }
+
+  .popover-native:popover-open {
+    opacity: 1;
+    translate: 0 0;
+    @starting-style {
+      opacity: 0;
+      translate: 0 10px;
+    }
+  }
+
+  .popover-native::backdrop {
+    background: transparent;
+  }
+
+  /* Focus ring with accent color */
+  .focus-ring-gold:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+    border-radius: 8px;
+  }
 }
 
+/* prefers-reduced-motion — disable animations for accessibility */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -144,5 +251,12 @@
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+    /* Disable scroll-driven animations */
+    animation-timeline: none !important;
+  }
+
+  /* Disable view transitions */
+  @view-transition {
+    navigation: none;
   }
 }

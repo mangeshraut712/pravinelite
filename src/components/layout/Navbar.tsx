@@ -1,8 +1,8 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import logoImg from "@/assets/logo.png";
 
 const links = [
@@ -19,6 +19,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(() => typeof window !== "undefined" && window.scrollY > 20);
   const [open, setOpen] = useState(false);
   const routerState = useRouterState();
+  const menuRef = useRef<HTMLDivElement>(null);
 
   // Close mobile menu on route change
   useEffect(() => {
@@ -60,9 +61,11 @@ export function Navbar() {
           <img
             src={logoImg}
             alt="Pravin Elite Logo"
-            className="h-16 w-16 rounded-full object-contain"
+            className="size-16 rounded-full object-contain"
             width={64}
             height={64}
+            decoding="async"
+            fetchPriority="high"
           />
         </Link>
 
@@ -102,7 +105,7 @@ export function Navbar() {
             className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-gold"
             aria-label="Call us at +91 92724 32562"
           >
-            <Phone className="h-4 w-4" />
+            <Phone className="size-4" />
             <span>+91 92724 32562</span>
           </a>
           <Link
@@ -115,68 +118,64 @@ export function Navbar() {
 
         <button
           type="button"
-          className="relative z-50 flex h-10 w-10 items-center justify-center rounded-lg lg:hidden hover:bg-gold/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+          className="relative z-50 flex size-10 items-center justify-center rounded-lg lg:hidden hover:bg-gold/10 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
           onClick={() => setOpen(!open)}
           aria-label={open ? "Close menu" : "Open menu"}
           aria-expanded={open}
           aria-controls="mobile-menu"
         >
-          {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+          {open ? <X className="size-6" /> : <Menu className="size-6" />}
         </button>
       </div>
 
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            key="mobile-menu"
-            id="mobile-menu"
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.3, ease: "easeInOut" }}
-            className="fixed inset-x-0 top-0 z-40 overflow-hidden lg:hidden"
-          >
-            <div className="glass mt-20 mx-4 rounded-2xl border border-border/50 backdrop-blur-xl shadow-2xl">
-              <nav className="flex flex-col px-4 py-3" aria-label="Mobile navigation">
-                {links.map((l) => {
-                  const isActive = routerState.location.pathname === l.to;
-                  return (
-                    <Link
-                      key={l.to}
-                      to={l.to}
-                      onClick={() => setOpen(false)}
-                      className={cn(
-                        "rounded-xl px-4 py-3.5 text-base font-medium transition-colors",
-                        isActive
-                          ? "bg-gold/10 text-gold"
-                          : "text-foreground hover:bg-gold/5 hover:text-gold",
-                      )}
-                    >
-                      {l.label}
-                    </Link>
-                  );
-                })}
-                <div className="mt-2 border-t border-border/50 pt-3">
-                  <Link
-                    to="/booking"
-                    onClick={() => setOpen(false)}
-                    className="block rounded-full bg-gradient-gold px-5 py-3.5 text-center text-sm font-semibold text-background shadow-gold"
-                  >
-                    Book Free Consult
-                  </Link>
-                  <a
-                    href="tel:+919272432562"
-                    onClick={() => setOpen(false)}
-                    className="mt-2 flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm text-muted-foreground hover:text-gold"
-                  >
-                    <Phone className="h-4 w-4" /> +91 92724 32562
-                  </a>
-                </div>
-              </nav>
-            </div>
-          </motion.div>
+      {/* Mobile menu with slide-down animation */}
+      <div
+        ref={menuRef}
+        id="mobile-menu"
+        className={cn(
+          "lg:hidden overflow-hidden transition-all duration-300 ease-in-out",
+          open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0",
         )}
-      </AnimatePresence>
+      >
+        <div className="glass mx-4 mt-3 rounded-2xl border border-border/50 backdrop-blur-xl shadow-2xl">
+          <nav className="flex flex-col px-4 py-3 smooth-expand" aria-label="Mobile navigation">
+            {links.map((l) => {
+              const isActive = routerState.location.pathname === l.to;
+              return (
+                <Link
+                  key={l.to}
+                  to={l.to}
+                  onClick={() => setOpen(false)}
+                  className={cn(
+                    "rounded-xl px-4 py-3.5 text-base font-medium transition-colors",
+                    isActive
+                      ? "bg-gold/10 text-gold"
+                      : "text-foreground hover:bg-gold/5 hover:text-gold",
+                  )}
+                >
+                  {l.label}
+                </Link>
+              );
+            })}
+            <div className="mt-2 border-t border-border/50 pt-3">
+              <Link
+                to="/booking"
+                onClick={() => setOpen(false)}
+                className="block rounded-full bg-gradient-gold px-5 py-3.5 text-center text-sm font-semibold text-background shadow-gold"
+              >
+                Book Free Consult
+              </Link>
+              <a
+                href="tel:+919272432562"
+                onClick={() => setOpen(false)}
+                className="mt-2 flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm text-muted-foreground hover:text-gold"
+              >
+                <Phone className="size-4" /> +91 92724 32562
+              </a>
+            </div>
+          </nav>
+        </div>
+      </div>
     </header>
   );
 }

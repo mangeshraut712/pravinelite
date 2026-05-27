@@ -34,3 +34,4 @@ dist-ssr
 
 #Ignore windsurf AI rules
 .windsurfrules
+.vercel
