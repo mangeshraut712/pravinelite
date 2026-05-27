@@ -1,0 +1,13 @@
+# Pravin Elite Fitness
+
+> Personal training, at-home coaching, online coaching, and Indian nutrition plans in Pune, Maharashtra. 1500+ transformations across fat loss, muscle gain, PCOS, diabetes, and general fitness.
+
+## Pages
+
+- [Home](/): Overview of services, programs, stats, and specializations.
+- [Services](/services): In-Gym, At-Home, Online coaching and Indian nutrition.
+- [Programs](/programs): 45-Day Challenge, 90-Day Elite, and Nutrition-only — transparent INR pricing.
+- [About](/about): Coach Pravin's story, philosophy, and certifications.
+- [Calculator](/calculator): India-tuned BMI, BMR, TDEE, and macro calculator with program recommendation.
+- [Booking](/booking): Book a free consultation with calendar and time-slot selection.
+- [Contact](/contact): WhatsApp, phone, and contact form for a free 30-minute consultation.
