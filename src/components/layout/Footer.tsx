@@ -25,7 +25,8 @@ export function Footer() {
               />
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
-              Pune's most trusted personal training studio. Real food, real training, real results since 2020.
+              Pune's most trusted personal training studio. Real food, real training, real results
+              since 2020.
             </p>
             {/* Social */}
             <div className="mt-6 flex gap-3">
@@ -88,12 +89,18 @@ export function Footer() {
             <h4 className="mb-4 font-display text-lg tracking-wider">Start Here</h4>
             <ul className="space-y-2.5 text-sm text-muted-foreground">
               <li>
-                <Link to="/booking" className="transition-colors hover:text-gold focus-visible:outline-none focus-visible:underline">
+                <Link
+                  to="/booking"
+                  className="transition-colors hover:text-gold focus-visible:outline-none focus-visible:underline"
+                >
                   Book a Consult
                 </Link>
               </li>
               <li>
-                <Link to="/programs" className="transition-colors hover:text-gold focus-visible:outline-none focus-visible:underline">
+                <Link
+                  to="/programs"
+                  className="transition-colors hover:text-gold focus-visible:outline-none focus-visible:underline"
+                >
                   View Pricing
                 </Link>
               </li>

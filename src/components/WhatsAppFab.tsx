@@ -22,12 +22,7 @@ export function WhatsAppFab() {
   return (
     <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
       {/* Native popover tooltip — uses HTML Popover API (2025+), no JS animation overhead */}
-      <div
-        ref={popoverRef}
-        id="whatsapp-tooltip"
-        popover="auto"
-        className="popover-native"
-      >
+      <div ref={popoverRef} id="whatsapp-tooltip" popover="auto" className="popover-native">
         <button
           type="button"
           popoverTarget="whatsapp-tooltip"
@@ -37,12 +32,8 @@ export function WhatsAppFab() {
         >
           <X className="size-3" />
         </button>
-        <p className="text-xs font-medium text-foreground">
-          👋 Chat with Pravin!
-        </p>
-        <p className="text-[10px] text-muted-foreground mt-0.5">
-          Replies within an hour
-        </p>
+        <p className="text-xs font-medium text-foreground">👋 Chat with Pravin!</p>
+        <p className="text-[10px] text-muted-foreground mt-0.5">Replies within an hour</p>
       </div>
 
       <a

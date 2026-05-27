@@ -16,7 +16,9 @@ const links = [
 ] as const;
 
 export function Navbar() {
-  const [scrolled, setScrolled] = useState(() => typeof window !== "undefined" && window.scrollY > 20);
+  const [scrolled, setScrolled] = useState(
+    () => typeof window !== "undefined" && window.scrollY > 20,
+  );
   const [open, setOpen] = useState(false);
   const routerState = useRouterState();
   const menuRef = useRef<HTMLDivElement>(null);

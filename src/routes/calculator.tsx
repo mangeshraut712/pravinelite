@@ -208,9 +208,7 @@ function CalculatorPage() {
         eyebrow="Smart Calculator · India-Specific"
         title={
           <>
-            <span className="sr-only">
-              Free BMI and Calorie Calculator for Indian Body Types:{" "}
-            </span>
+            <span className="sr-only">Free BMI and Calorie Calculator for Indian Body Types: </span>
             Know Your <span className="text-gradient-gold">Numbers.</span>
             <br />
             Know Your <span className="text-gradient-gold">Plan.</span>
@@ -249,7 +247,11 @@ function CalculatorPage() {
                   />
                 </Field>
                 <Field label="Gender">
-                  <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Select your gender">
+                  <div
+                    className="grid grid-cols-3 gap-2"
+                    role="radiogroup"
+                    aria-label="Select your gender"
+                  >
                     {(["male", "female", "other"] as const).map((g) => (
                       <button
                         type="button"

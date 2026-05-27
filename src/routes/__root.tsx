@@ -81,13 +81,25 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Pravin Elite Fitness - #1 Personal Trainer in Pune" },
-      { name: "description", content: "Pune's most trusted personal trainer. 1500+ transformations. In-Gym, At-Home & Online coaching for fat loss, muscle gain, PCOS & more." },
-      { name: "keywords", content: "personal trainer Pune, fitness coach, weight loss, muscle gain, PCOS diet, online coaching, at-home training, Indian nutrition plan, fat loss transformation" },
+      {
+        name: "description",
+        content:
+          "Pune's most trusted personal trainer. 1500+ transformations. In-Gym, At-Home & Online coaching for fat loss, muscle gain, PCOS & more.",
+      },
+      {
+        name: "keywords",
+        content:
+          "personal trainer Pune, fitness coach, weight loss, muscle gain, PCOS diet, online coaching, at-home training, Indian nutrition plan, fat loss transformation",
+      },
       { name: "author", content: "Pravin Elite Fitness" },
       { name: "robots", content: "index, follow" },
       { name: "googlebot", content: "index, follow" },
       { property: "og:title", content: "Pravin Elite Fitness - #1 Personal Trainer in Pune" },
-      { property: "og:description", content: "1500+ body transformations in Pune. Custom Indian diet plans. Book your free consultation today." },
+      {
+        property: "og:description",
+        content:
+          "1500+ body transformations in Pune. Custom Indian diet plans. Book your free consultation today.",
+      },
       { property: "og:type", content: "website" },
       { property: "og:url", content: "https://pravinelitefit.com" },
       { property: "og:image", content: "/logo.png" },
@@ -100,7 +112,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@PravinEliteFitness" },
       { name: "twitter:title", content: "Pravin Elite Fitness - #1 Personal Trainer in Pune" },
-      { name: "twitter:description", content: "1500+ body transformations in Pune. Custom Indian diet plans. Book your free consultation today." },
+      {
+        name: "twitter:description",
+        content:
+          "1500+ body transformations in Pune. Custom Indian diet plans. Book your free consultation today.",
+      },
       { name: "twitter:image", content: "/logo.png" },
     ],
     links: [
@@ -131,7 +147,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
             {
               "@type": "LocalBusiness",
               name: "Pravin Elite Fitness",
-              description: "Personal training, at-home coaching, online coaching, and Indian nutrition plans in Pune, Maharashtra.",
+              description:
+                "Personal training, at-home coaching, online coaching, and Indian nutrition plans in Pune, Maharashtra.",
               telephone: "+91-9272432562",
               url: "https://pravinelitefit.com",
               image: "/logo.png",
@@ -160,7 +177,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
               "@type": "Person",
               name: "Pravin",
               jobTitle: "Personal Trainer",
-              description: "Pravin is a certified personal trainer in Pune with 5+ years of experience and 1500+ client transformations.",
+              description:
+                "Pravin is a certified personal trainer in Pune with 5+ years of experience and 1500+ client transformations.",
               url: "https://pravinelitefit.com/about",
               sameAs: [
                 "https://www.instagram.com/pravinelitefitness_india",
@@ -184,7 +202,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className="dark" style={{ scrollBehavior: 'smooth' }}>
+    <html lang="en" className="dark" style={{ scrollBehavior: "smooth" }}>
       <head>
         <HeadContent />
       </head>
