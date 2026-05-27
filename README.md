@@ -96,7 +96,7 @@ A cutting-edge, high-performance fitness website built with 2026 web technologie
 
 ### Prerequisites
 
-- **Node.js** 18+ (LTS recommended)
+- **Node.js** 22.12+ (GitHub Actions uses Node 22; Vercel uses a supported LTS runtime)
 - **npm** 9+ or **pnpm** 8+
 
 ### Installation
