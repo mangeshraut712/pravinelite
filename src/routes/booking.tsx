@@ -5,7 +5,6 @@ import { format, addDays, isBefore, startOfDay } from "date-fns";
 import { CalendarIcon, Clock, CheckCircle2, MessageCircle, ArrowRight, MapPin } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { WhatsAppFab } from "@/components/WhatsAppFab";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { Section, Eyebrow, Reveal } from "@/components/ui/section";
 import { HeroSection } from "@/components/ui/hero-section";
@@ -22,7 +21,7 @@ export const Route = createFileRoute("/booking")({
       {
         name: "description",
         content:
-          "Schedule a 30-minute free consultation with Pune's top personal trainer. Pick a date & time online. Confirmation on WhatsApp within the hour.",
+          "Schedule a 30-minute free consultation with Pune's premier personal trainer. Pick a date & time online. Confirmation on WhatsApp within the hour.",
       },
       { property: "og:title", content: "Book Your Free Consultation — Pravin Elite Fitness" },
       {
@@ -115,6 +114,9 @@ function BookingPage() {
   const [submitting, setSubmitting] = useState(false);
   const [confirmed, setConfirmed] = useState<null | { id: string; date: Date; time: string }>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[] | undefined>>({});
+
+  const [isCalendarOpen, setIsCalendarOpen] = useState(false);
 
   const today = startOfDay(new Date());
   const maxDate = addDays(today, 60);
@@ -130,19 +132,20 @@ Mode: ${MODES.find((m) => m.v === form.mode)?.l}
 Slot: ${format(confirmed.date, "EEEE, d MMM yyyy")} · ${confirmed.time}
 
 Please confirm. Thank you!`;
-    return `https://wa.me/9175200391?text=${encodeURIComponent(msg)}`;
+    return `https://wa.me/919272432562?text=${encodeURIComponent(msg)}`;
   }, [confirmed, form]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setErr(null);
+    setFieldErrors({});
     if (!date) {
       setErr("Please pick a date for your consultation.");
       return;
     }
     const parsed = schema.safeParse({ ...form, email: form.email || undefined });
     if (!parsed.success) {
-      setErr(parsed.error.issues[0]?.message ?? "Please check the form.");
+      setFieldErrors(parsed.error.flatten().fieldErrors);
       return;
     }
 
@@ -180,7 +183,6 @@ Please confirm. Thank you!`;
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <WhatsAppFab />
       <ScrollToTop />
 
       <HeroSection
@@ -218,12 +220,12 @@ Please confirm. Thank you!`;
                     <div className="mb-3 flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-gold">
                       <CalendarIcon className="h-3.5 w-3.5" /> Pick a Date
                     </div>
-                    <Popover>
+                    <Popover open={isCalendarOpen} onOpenChange={setIsCalendarOpen}>
                       <PopoverTrigger asChild>
                         <button
                           type="button"
                           className={cn(
-                            "flex w-full items-center justify-between rounded-xl border border-input bg-background px-4 py-3 text-left transition-colors hover:border-gold",
+                            "flex w-full items-center justify-between rounded-xl border border-input bg-background px-4 py-3 text-left transition-colors hover:border-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold",
                             !date && "text-muted-foreground",
                           )}
                         >
@@ -235,7 +237,10 @@ Please confirm. Thank you!`;
                         <Calendar
                           mode="single"
                           selected={date}
-                          onSelect={setDate}
+                          onSelect={(d) => {
+                            setDate(d);
+                            setIsCalendarOpen(false);
+                          }}
                           disabled={(d) => isBefore(d, today) || isBefore(maxDate, d)}
                           className={cn("pointer-events-auto p-3")}
                           initialFocus
@@ -254,8 +259,9 @@ Please confirm. Thank you!`;
                           key={t}
                           type="button"
                           onClick={() => setTime(t)}
+                          aria-pressed={time === t}
                           className={cn(
-                            "rounded-xl border px-3 py-2.5 text-sm transition-all",
+                            "rounded-xl border px-3 py-2.5 text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold",
                             time === t
                               ? "border-gold bg-gold/10 text-gold"
                               : "border-border bg-background text-muted-foreground hover:border-gold/40",
@@ -283,40 +289,72 @@ Please confirm. Thank you!`;
                     <MapPin className="h-3.5 w-3.5" /> Your Details
                   </div>
 
-                  <input
-                    placeholder="Full Name"
-                    value={form.name}
-                    onChange={(e) => setForm({ ...form, name: e.target.value })}
-                    required
-                    maxLength={100}
-                    aria-label="Your full name"
-                    className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20"
-                  />
-                  <input
-                    placeholder="Phone (+91 92724 32562)"
-                    type="tel"
-                    value={form.phone}
-                    onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                    required
-                    maxLength={20}
-                    aria-label="Your phone number"
-                    className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20"
-                  />
-                  <input
-                    placeholder="Email (optional)"
-                    type="email"
-                    value={form.email}
-                    onChange={(e) => setForm({ ...form, email: e.target.value })}
-                    maxLength={254}
-                    aria-label="Your email address"
-                    className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20"
-                  />
+                  <div>
+                    <input
+                      id="name-input"
+                      placeholder="Full Name"
+                      value={form.name}
+                      onChange={(e) => setForm({ ...form, name: e.target.value })}
+                      required
+                      maxLength={100}
+                      aria-label="Your full name"
+                      aria-invalid={fieldErrors.name ? "true" : "false"}
+                      aria-describedby={fieldErrors.name ? "name-error" : undefined}
+                      className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                    />
+                    {fieldErrors.name?.[0] && (
+                      <p id="name-error" role="alert" className="mt-1 text-xs text-destructive">
+                        {fieldErrors.name[0]}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <input
+                      id="phone-input"
+                      placeholder="Phone (+91 92724 32562)"
+                      type="tel"
+                      value={form.phone}
+                      onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                      required
+                      maxLength={20}
+                      aria-label="Your phone number"
+                      aria-invalid={fieldErrors.phone ? "true" : "false"}
+                      aria-describedby={fieldErrors.phone ? "phone-error" : undefined}
+                      className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                    />
+                    {fieldErrors.phone?.[0] && (
+                      <p id="phone-error" role="alert" className="mt-1 text-xs text-destructive">
+                        {fieldErrors.phone[0]}
+                      </p>
+                    )}
+                  </div>
+
+                  <div>
+                    <input
+                      id="email-input"
+                      placeholder="Email (optional)"
+                      type="email"
+                      value={form.email}
+                      onChange={(e) => setForm({ ...form, email: e.target.value })}
+                      maxLength={254}
+                      aria-label="Your email address"
+                      aria-invalid={fieldErrors.email ? "true" : "false"}
+                      aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                      className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                    />
+                    {fieldErrors.email?.[0] && (
+                      <p id="email-error" role="alert" className="mt-1 text-xs text-destructive">
+                        {fieldErrors.email[0]}
+                      </p>
+                    )}
+                  </div>
 
                   <select
                     value={form.goal}
                     onChange={(e) => setForm({ ...form, goal: e.target.value as typeof form.goal })}
                     aria-label="Your fitness goal"
-                    className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20"
+                    className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                   >
                     {GOALS.map((g) => (
                       <option key={g.v} value={g.v}>
@@ -331,8 +369,9 @@ Please confirm. Thank you!`;
                         type="button"
                         key={m.v}
                         onClick={() => setForm({ ...form, mode: m.v })}
+                        aria-pressed={form.mode === m.v}
                         className={cn(
-                          "rounded-xl border px-2 py-2.5 text-xs transition-all",
+                          "rounded-xl border px-2 py-2.5 text-xs transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold",
                           form.mode === m.v
                             ? "border-gold bg-gold/10 text-gold"
                             : "border-border bg-background text-muted-foreground hover:border-gold/40",
@@ -343,14 +382,24 @@ Please confirm. Thank you!`;
                     ))}
                   </div>
 
-                  <textarea
-                    placeholder="Anything Pravin should know? (optional)"
-                    rows={3}
-                    value={form.notes}
-                    onChange={(e) => setForm({ ...form, notes: e.target.value })}
-                    maxLength={500}
-                    className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20"
-                  />
+                  <div>
+                    <textarea
+                      placeholder="Anything Pravin should know? (optional)"
+                      rows={3}
+                      value={form.notes}
+                      onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                      maxLength={500}
+                      aria-label="Notes for Pravin"
+                      aria-invalid={fieldErrors.notes ? "true" : "false"}
+                      aria-describedby={fieldErrors.notes ? "notes-error" : undefined}
+                      className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                    />
+                    {fieldErrors.notes?.[0] && (
+                      <p id="notes-error" role="alert" className="mt-1 text-xs text-destructive">
+                        {fieldErrors.notes[0]}
+                      </p>
+                    )}
+                  </div>
 
                   {err && (
                     <p className="rounded-xl border border-destructive/40 bg-destructive/10 px-4 py-2.5 text-sm">

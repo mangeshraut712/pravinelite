@@ -139,14 +139,12 @@
     color: var(--color-foreground);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
-    /* Optimize page rendering with content-visibility */
-    content-visibility: auto;
   }
   /* Headings with interpolate-size for smooth font-size transitions */
   h1, h2, h3, h4 {
     font-family: var(--font-display);
     letter-spacing: 0.01em;
-    line-height: 1;
+    line-height: 1.05;
   }
 }
 

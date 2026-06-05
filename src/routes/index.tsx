@@ -19,7 +19,6 @@ import {
 } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { WhatsAppFab } from "@/components/WhatsAppFab";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { Section, Eyebrow, Reveal } from "@/components/ui/section";
 import { HeroSection } from "@/components/ui/hero-section";
@@ -36,7 +35,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Pune's most trusted personal trainer. 1500+ transformations across In-Gym, At-Home, and Online coaching with custom Indian nutrition plans.",
+          "Pune's premier personal trainer. 1500+ transformations across In-Gym, At-Home, and Online coaching with custom Indian nutrition plans.",
       },
       { property: "og:title", content: "Pravin Elite Fitness — Personal Training in Pune" },
       {
@@ -171,7 +170,6 @@ function Index() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <WhatsAppFab />
       <ScrollToTop />
 
       {/* HERO */}
@@ -197,14 +195,14 @@ function Index() {
               className="mb-6 inline-flex items-center gap-2 rounded-full border border-gold/30 bg-gold/5 px-4 py-1.5"
             >
               <span className="h-2 w-2 animate-pulse rounded-full bg-gold" />
-              <Eyebrow>Pune's #1 Personal Trainer</Eyebrow>
+              <Eyebrow>Pune's Premier Personal Trainer</Eyebrow>
             </motion.div>
 
             <motion.h1
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.7, delay: 0.1 }}
-              className="font-display text-6xl leading-[0.9] tracking-tight md:text-8xl"
+              className="font-display text-6xl leading-none tracking-tight md:text-8xl"
             >
               <span className="sr-only">Pravin Elite Fitness — Personal Training in Pune. </span>
               <span aria-hidden="true">
@@ -263,7 +261,7 @@ function Index() {
                 <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </Link>
               <a
-                href="https://wa.me/9175200391"
+                href="https://wa.me/919272432562"
                 className="inline-flex items-center gap-2 rounded-full border border-border bg-card/40 px-8 py-4 font-semibold text-foreground backdrop-blur transition-all hover:border-gold hover:text-gold"
               >
                 <MessageCircle className="h-5 w-5" /> Chat on WhatsApp
@@ -300,7 +298,7 @@ function Index() {
               </motion.div>
               <div className="mt-1 text-lg font-medium">Lives Changed</div>
               <p className="mt-3 text-sm text-muted-foreground">
-                Join Pune's most successful body transformation program.
+                Join Pune's leading body transformation program.
               </p>
               <Link
                 to="/programs"
@@ -318,7 +316,7 @@ function Index() {
 
       {/* STATS */}
       <Section className="border-y border-border">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 md:gap-8 md:grid-cols-4">
           {stats.map((s, i) => (
             <Reveal key={s.label} delay={i * 0.1}>
               <div className="text-center">
@@ -658,7 +656,7 @@ function Index() {
                   Book Free Consultation
                 </Link>
                 <a
-                  href="https://wa.me/9175200391"
+                  href="https://wa.me/919272432562"
                   className="rounded-full border border-border bg-card/40 px-8 py-4 font-semibold backdrop-blur transition-all hover:border-gold hover:text-gold"
                 >
                   💬 WhatsApp Now

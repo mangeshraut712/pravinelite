@@ -62,7 +62,7 @@ export function FAQ() {
           <Accordion type="single" collapsible className="w-full">
             {faqs.map((f) => (
               <AccordionItem key={f.id} value={f.id} className="border-b border-border">
-                <AccordionTrigger className="text-left font-display text-lg tracking-wide hover:text-gold hover:no-underline md:text-xl">
+                <AccordionTrigger className="text-left font-display text-base tracking-wide hover:text-gold hover:no-underline sm:text-lg md:text-xl">
                   {f.q}
                 </AccordionTrigger>
                 <AccordionContent className="text-base leading-relaxed text-muted-foreground">

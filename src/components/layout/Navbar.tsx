@@ -57,7 +57,7 @@ export function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6">
         <Link
           to="/"
-          className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-lg"
+          className="flex items-center gap-2 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold rounded-lg transition-transform hover:scale-105 duration-200"
           aria-label="Pravin Elite Fitness — Home"
         >
           <img
@@ -83,7 +83,7 @@ export function Navbar() {
                 key={l.to}
                 to={l.to}
                 className={cn(
-                  "relative rounded-lg px-4 py-2 text-sm font-medium transition-colors",
+                  "relative rounded-lg px-4 py-2 text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold",
                   isActive ? "text-gold" : "text-muted-foreground hover:text-gold",
                 )}
                 activeProps={{ className: "text-gold" }}
@@ -104,7 +104,7 @@ export function Navbar() {
         <div className="hidden items-center gap-3 lg:flex">
           <a
             href="tel:+919272432562"
-            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-gold"
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm text-muted-foreground transition-colors hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
             aria-label="Call us at +91 92724 32562"
           >
             <Phone className="size-4" />
@@ -149,7 +149,7 @@ export function Navbar() {
                   to={l.to}
                   onClick={() => setOpen(false)}
                   className={cn(
-                    "rounded-xl px-4 py-3.5 text-base font-medium transition-colors",
+                    "rounded-xl px-4 py-3.5 text-base font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold",
                     isActive
                       ? "bg-gold/10 text-gold"
                       : "text-foreground hover:bg-gold/5 hover:text-gold",
@@ -163,14 +163,14 @@ export function Navbar() {
               <Link
                 to="/booking"
                 onClick={() => setOpen(false)}
-                className="block rounded-full bg-gradient-gold px-5 py-3.5 text-center text-sm font-semibold text-background shadow-gold"
+                className="block rounded-full bg-gradient-gold px-5 py-3.5 text-center text-sm font-semibold text-background shadow-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
               >
                 Book Free Consult
               </Link>
               <a
                 href="tel:+919272432562"
                 onClick={() => setOpen(false)}
-                className="mt-2 flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm text-muted-foreground hover:text-gold"
+                className="mt-2 flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm text-muted-foreground hover:text-gold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
               >
                 <Phone className="size-4" /> +91 92724 32562
               </a>

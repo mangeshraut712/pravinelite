@@ -51,3 +51,7 @@ bun.lock
 
 # AI tools
 .windsurfrules
+
+# Local scratch and report files
+scratch/
+security_best_practices_report.md

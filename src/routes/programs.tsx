@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { WhatsAppFab } from "@/components/WhatsAppFab";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { Section, Eyebrow, Reveal } from "@/components/ui/section";
 import { HeroSection } from "@/components/ui/hero-section";
@@ -127,7 +126,6 @@ function ProgramsPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <WhatsAppFab />
       <ScrollToTop />
 
       <HeroSection

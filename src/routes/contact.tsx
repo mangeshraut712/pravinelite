@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { WhatsAppFab } from "@/components/WhatsAppFab";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { Section, Eyebrow, Reveal } from "@/components/ui/section";
 import { HeroSection } from "@/components/ui/hero-section";
@@ -19,6 +18,7 @@ import {
   Sparkles,
 } from "lucide-react";
 import { useState } from "react";
+import { z } from "zod";
 
 export const Route = createFileRoute("/contact")({
   head: () => ({
@@ -36,7 +36,7 @@ export const Route = createFileRoute("/contact")({
       {
         property: "og:description",
         content:
-          "WhatsApp, call, or message Pune's #1 personal trainer. Free 30-minute consultation, reply within an hour.",
+          "WhatsApp, call, or message Pune's premier personal trainer. Free 30-minute consultation, reply within an hour.",
       },
       { property: "og:url", content: "/contact" },
     ],
@@ -50,7 +50,7 @@ const contactMethods = [
     icon: MessageCircle,
     label: "WhatsApp (Fastest)",
     value: "+91 92724 32562",
-    href: "https://wa.me/9175200391",
+    href: "https://wa.me/919272432562",
     color: "bg-[#25D366]/15 text-[#25D366]",
     hover: "hover:border-[#25D366] hover:shadow-[#25D366]/20",
   },
@@ -72,13 +72,27 @@ const contactMethods = [
   },
 ];
 
+const contactSchema = z.object({
+  name: z.string().trim().min(2, "Please enter your name").max(100),
+  phone: z
+    .string()
+    .trim()
+    .min(7, "Enter a valid phone number")
+    .max(20)
+    .regex(/^[0-9+\-\s()]+$/, "Use digits only"),
+  email: z.string().trim().email("Invalid email").max(254).optional().or(z.literal("")),
+  goal: z.string().min(1, "Please select a goal"),
+  mode: z.string().min(1, "Please select a training mode"),
+  notes: z.string().max(500).optional(),
+});
+
 function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string[] | undefined>>({});
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <WhatsAppFab />
       <ScrollToTop />
 
       <HeroSection
@@ -128,58 +142,138 @@ function ContactPage() {
                 <form
                   onSubmit={(e) => {
                     e.preventDefault();
+                    setFieldErrors({});
+
+                    const formData = new FormData(e.currentTarget);
+                    const name = formData.get("name") as string;
+                    const phone = formData.get("phone") as string;
+                    const email = formData.get("email") as string;
+                    const goal = formData.get("goal") as string;
+                    const mode = formData.get("mode") as string;
+                    const notes = formData.get("notes") as string;
+
+                    const parsed = contactSchema.safeParse({
+                      name,
+                      phone,
+                      email: email || undefined,
+                      goal,
+                      mode,
+                      notes: notes || undefined,
+                    });
+
+                    if (!parsed.success) {
+                      setFieldErrors(parsed.error.flatten().fieldErrors);
+                      return;
+                    }
+
                     setSubmitted(true);
+
+                    const msg = `Hi Pravin! I'd like to get in touch:
+
+Name: ${parsed.data.name}
+Phone: ${parsed.data.phone}
+${parsed.data.email ? `Email: ${parsed.data.email}\n` : ""}Goal: ${parsed.data.goal}
+Mode: ${parsed.data.mode}
+${parsed.data.notes ? `Message: ${parsed.data.notes}` : ""}`;
+
+                    window.open(
+                      `https://wa.me/919272432562?text=${encodeURIComponent(msg)}`,
+                      "_blank",
+                      "noopener,noreferrer"
+                    );
                   }}
                   className="space-y-4"
                 >
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <input
-                      required
-                      aria-label="Your name"
-                      placeholder="Your Name"
-                      className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20"
-                    />
-                    <input
-                      required
-                      type="tel"
-                      aria-label="Phone number"
-                      placeholder="Phone (+91)"
-                      className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20"
-                    />
+                    <div>
+                      <input
+                        required
+                        name="name"
+                        aria-label="Your name"
+                        placeholder="Your Name"
+                        aria-invalid={fieldErrors.name ? "true" : "false"}
+                        aria-describedby={fieldErrors.name ? "name-error" : undefined}
+                        className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                      />
+                      {fieldErrors.name?.[0] && (
+                        <p id="name-error" role="alert" className="mt-1 text-xs text-destructive">
+                          {fieldErrors.name[0]}
+                        </p>
+                      )}
+                    </div>
+                    <div>
+                      <input
+                        required
+                        name="phone"
+                        type="tel"
+                        aria-label="Phone number"
+                        placeholder="Phone (+91)"
+                        aria-invalid={fieldErrors.phone ? "true" : "false"}
+                        aria-describedby={fieldErrors.phone ? "phone-error" : undefined}
+                        className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                      />
+                      {fieldErrors.phone?.[0] && (
+                        <p id="phone-error" role="alert" className="mt-1 text-xs text-destructive">
+                          {fieldErrors.phone[0]}
+                        </p>
+                      )}
+                    </div>
                   </div>
-                  <input
-                    type="email"
-                    aria-label="Email address"
-                    placeholder="Email (optional)"
-                    className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20"
-                  />
+                  <div>
+                    <input
+                      name="email"
+                      type="email"
+                      aria-label="Email address"
+                      placeholder="Email (optional)"
+                      aria-invalid={fieldErrors.email ? "true" : "false"}
+                      aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                      className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                    />
+                    {fieldErrors.email?.[0] && (
+                      <p id="email-error" role="alert" className="mt-1 text-xs text-destructive">
+                        {fieldErrors.email[0]}
+                      </p>
+                    )}
+                  </div>
                   <div className="grid gap-4 sm:grid-cols-2">
                     <select
+                      name="goal"
                       aria-label="Your fitness goal"
-                      className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20"
+                      className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                     >
-                      <option>My Goal: Fat Loss</option>
-                      <option>My Goal: Muscle Gain</option>
-                      <option>My Goal: PCOS / PCOD</option>
-                      <option>My Goal: Diabetes Management</option>
-                      <option>My Goal: General Fitness</option>
+                      <option value="Fat Loss">My Goal: Fat Loss</option>
+                      <option value="Muscle Gain">My Goal: Muscle Gain</option>
+                      <option value="PCOS / PCOD">My Goal: PCOS / PCOD</option>
+                      <option value="Diabetes Management">My Goal: Diabetes Management</option>
+                      <option value="General Fitness">My Goal: General Fitness</option>
                     </select>
                     <select
+                      name="mode"
                       aria-label="Preferred training mode"
-                      className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20"
+                      className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                     >
-                      <option>Mode: In-Gym</option>
-                      <option>Mode: At-Home</option>
-                      <option>Mode: Online</option>
+                      <option value="In-Gym">Mode: In-Gym</option>
+                      <option value="At-Home">Mode: At-Home</option>
+                      <option value="Online">Mode: Online</option>
                     </select>
                   </div>
-                  <textarea
-                    rows={4}
-                    aria-label="Message about your goals"
-                    placeholder="Tell me about your goals, medical conditions, or anything else I should know (optional)"
-                    className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20"
-                  />
-                  <button className="group w-full rounded-full bg-gradient-gold px-6 py-3.5 font-semibold text-background shadow-gold transition-all hover:scale-[1.02] hover:shadow-lg">
+                  <div>
+                    <textarea
+                      name="notes"
+                      rows={4}
+                      aria-label="Message about your goals"
+                      placeholder="Tell me about your goals, medical conditions, or anything else I should know (optional)"
+                      aria-invalid={fieldErrors.notes ? "true" : "false"}
+                      aria-describedby={fieldErrors.notes ? "notes-error" : undefined}
+                      className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                    />
+                    {fieldErrors.notes?.[0] && (
+                      <p id="notes-error" role="alert" className="mt-1 text-xs text-destructive">
+                        {fieldErrors.notes[0]}
+                      </p>
+                    )}
+                  </div>
+                  <button className="group w-full rounded-full bg-gradient-gold px-6 py-3.5 font-semibold text-background shadow-gold transition-all hover:scale-[1.02] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                     <span className="flex items-center justify-center gap-2">
                       Start My Journey
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />

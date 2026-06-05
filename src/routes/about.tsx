@@ -2,7 +2,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { WhatsAppFab } from "@/components/WhatsAppFab";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { Section, Eyebrow, Reveal } from "@/components/ui/section";
 import { HeroSection } from "@/components/ui/hero-section";
@@ -12,13 +11,13 @@ import { Award, Users, Calendar, Target, Quote } from "lucide-react";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About Pravin — Pune's #1 Personal Trainer" },
+      { title: "About Pravin — Pune's Premier Personal Trainer" },
       {
         name: "description",
         content:
           "Five years of coaching, 1500+ transformations. Meet Pravin and learn the philosophy behind Pravin Elite Fitness.",
       },
-      { property: "og:title", content: "About Pravin — Pune's #1 Personal Trainer" },
+      { property: "og:title", content: "About Pravin — Pune's Premier Personal Trainer" },
       {
         property: "og:description",
         content:
@@ -53,7 +52,6 @@ function AboutPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <WhatsAppFab />
       <ScrollToTop />
 
       <HeroSection

@@ -25,7 +25,7 @@ export function Footer() {
               />
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
-              Pune's most trusted personal training studio. Real food, real training, real results
+              Pune's premier personal training studio. Real food, real training, real results
               since 2020.
             </p>
             {/* Social */}
@@ -49,7 +49,7 @@ export function Footer() {
                 <Youtube className="size-4" />
               </a>
               <a
-                href="https://wa.me/9175200391"
+                href="https://wa.me/919272432562"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="rounded-full border border-border p-2.5 transition-all hover:border-gold hover:text-gold hover:bg-gold/5"
@@ -75,7 +75,7 @@ export function Footer() {
                 <li key={l.to}>
                   <Link
                     to={l.to}
-                    className="transition-colors hover:text-gold focus-visible:outline-none focus-visible:underline"
+                    className="inline-block transition-all hover:text-gold hover:translate-x-1 duration-200 focus-visible:outline-none focus-visible:underline"
                   >
                     {l.label}
                   </Link>
@@ -91,7 +91,7 @@ export function Footer() {
               <li>
                 <Link
                   to="/booking"
-                  className="transition-colors hover:text-gold focus-visible:outline-none focus-visible:underline"
+                  className="inline-block transition-all hover:text-gold hover:translate-x-1 duration-200 focus-visible:outline-none focus-visible:underline"
                 >
                   Book a Consult
                 </Link>
@@ -99,23 +99,26 @@ export function Footer() {
               <li>
                 <Link
                   to="/programs"
-                  className="transition-colors hover:text-gold focus-visible:outline-none focus-visible:underline"
+                  className="inline-block transition-all hover:text-gold hover:translate-x-1 duration-200 focus-visible:outline-none focus-visible:underline"
                 >
                   View Pricing
                 </Link>
               </li>
               <li>
                 <a
-                  href="https://wa.me/9175200391"
+                  href="https://wa.me/919272432562"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="transition-colors hover:text-gold"
+                  className="inline-block transition-all hover:text-gold hover:translate-x-1 duration-200 focus-visible:outline-none focus-visible:underline"
                 >
                   WhatsApp Now
                 </a>
               </li>
               <li>
-                <a href="tel:+919272432562" className="transition-colors hover:text-gold">
+                <a
+                  href="tel:+919272432562"
+                  className="inline-block transition-all hover:text-gold hover:translate-x-1 duration-200 focus-visible:outline-none focus-visible:underline"
+                >
                   Call +91 92724 32562
                 </a>
               </li>
@@ -138,7 +141,7 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-2">
                 <MessageCircle className="size-4 shrink-0 text-gold" />
-                <a href="https://wa.me/9175200391" className="hover:text-gold">
+                <a href="https://wa.me/919272432562" className="hover:text-gold">
                   +91 92724 32562
                 </a>
               </li>
@@ -195,12 +198,6 @@ export function Footer() {
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-5 text-xs text-muted-foreground md:flex-row">
           <span>© {new Date().getFullYear()} Pravin Elite Fitness. All rights reserved.</span>
-          <div className="flex items-center gap-4">
-            <a href="/sitemap.xml" className="hover:text-gold transition-colors">
-              Sitemap
-            </a>
-            <span>Made with &#10084;&#65039; in Pune, India &#127470;&#127475;</span>
-          </div>
         </div>
       </div>
     </footer>

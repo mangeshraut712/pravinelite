@@ -4,13 +4,15 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Activity, Flame, Target, TrendingUp, ArrowRight, MessageCircle } from "lucide-react";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { WhatsAppFab } from "@/components/WhatsAppFab";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { Section, Eyebrow, Reveal } from "@/components/ui/section";
 import { HeroSection } from "@/components/ui/hero-section";
 import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 import calculatorHero from "@/assets/calculator-hero.jpg";
+import { cn } from "@/lib/utils";
+import { PieChart, Pie } from "recharts";
+import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
 
 export const Route = createFileRoute("/calculator")({
   head: () => ({
@@ -19,7 +21,7 @@ export const Route = createFileRoute("/calculator")({
       {
         name: "description",
         content:
-          "Free India-specific BMI, TDEE & calorie calculator. Get an instant personalized program recommendation from Pune's top personal trainer.",
+          "Free India-specific BMI, TDEE & calorie calculator. Get an instant personalized program recommendation from Pune's premier personal trainer.",
       },
       { property: "og:title", content: "Free BMI + Calorie Calculator — Indian Standards" },
       {
@@ -65,6 +67,29 @@ function getBmiCategory(bmi: number) {
   if (bmi < 30) return { label: "Obese Class I", color: "text-orange-400", tone: "obese1" };
   return { label: "Obese Class II", color: "text-red-400", tone: "obese2" };
 }
+
+const getSliderPercentage = (bmi: number) => {
+  if (bmi < 18.5) return (bmi / 18.5) * 23;
+  if (bmi < 23) return 23 + ((bmi - 18.5) / 4.5) * 10;
+  if (bmi < 25) return 33 + ((bmi - 23) / 2) * 12;
+  if (bmi < 30) return 45 + ((bmi - 25) / 5) * 25;
+  return 70 + (Math.min(10, bmi - 30) / 10) * 30;
+};
+
+const chartConfig = {
+  protein: {
+    label: "Protein",
+    color: "var(--color-gold)",
+  },
+  carbs: {
+    label: "Carbohydrates",
+    color: "var(--color-fire)",
+  },
+  fats: {
+    label: "Fats",
+    color: "#3b82f6",
+  },
+} satisfies ChartConfig;
 
 function recommendProgram(bmi: number, goal: FormData["goal"]) {
   if (goal === "pcos" || goal === "diabetes") {
@@ -202,7 +227,6 @@ function CalculatorPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <WhatsAppFab />
       <ScrollToTop />
       <HeroSection
         eyebrow="Smart Calculator · India-Specific"
@@ -242,7 +266,7 @@ function CalculatorPage() {
                     }
                     placeholder="28"
                     aria-label="Your age"
-                    className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold"
+                    className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none transition-colors focus:border-gold focus:ring-1 focus:ring-gold/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                     required
                   />
                 </Field>
@@ -255,11 +279,12 @@ function CalculatorPage() {
                     {(["male", "female", "other"] as const).map((g) => (
                       <button
                         type="button"
+                        role="radio"
+                        aria-checked={form.gender === g}
                         key={g}
                         onClick={() => setForm({ ...form, gender: g })}
-                        className={`rounded-xl border px-3 py-3 text-sm capitalize transition-all ${form.gender === g ? "border-gold bg-gold/10 text-gold" : "border-border bg-background text-muted-foreground hover:border-gold/40"}`}
+                        className={`rounded-xl border px-3 py-3 text-sm capitalize transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${form.gender === g ? "border-gold bg-gold/10 text-gold" : "border-border bg-background text-muted-foreground hover:border-gold/40"}`}
                         aria-label={`Gender: ${g}`}
-                        aria-pressed={form.gender === g}
                       >
                         {g}
                       </button>
@@ -277,7 +302,7 @@ function CalculatorPage() {
                     }
                     placeholder="170"
                     aria-label="Your height in centimeters"
-                    className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none focus:border-gold"
+                    className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none focus:border-gold focus:ring-1 focus:ring-gold/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                     required
                   />
                 </Field>
@@ -293,7 +318,7 @@ function CalculatorPage() {
                     }
                     placeholder="75"
                     aria-label="Your weight in kilograms"
-                    className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none focus:border-gold"
+                    className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none focus:border-gold focus:ring-1 focus:ring-gold/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                     required
                   />
                 </Field>
@@ -304,7 +329,7 @@ function CalculatorPage() {
                       setForm({ ...form, activity: e.target.value as FormData["activity"] })
                     }
                     aria-label="Select your activity level"
-                    className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none focus:border-gold"
+                    className="w-full rounded-xl border border-input bg-background px-4 py-3 outline-none focus:border-gold focus:ring-1 focus:ring-gold/30 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                   >
                     {Object.entries(ACTIVITY_LABELS).map(([v, l]) => (
                       <option key={v} value={v}>
@@ -328,7 +353,8 @@ function CalculatorPage() {
                         type="button"
                         key={v}
                         onClick={() => setForm({ ...form, goal: v })}
-                        className={`rounded-xl border px-3 py-2.5 text-sm transition-all ${form.goal === v ? "border-gold bg-gold/10 text-gold" : "border-border bg-background text-muted-foreground hover:border-gold/40"}`}
+                        aria-pressed={form.goal === v}
+                        className={`rounded-xl border px-3 py-2.5 text-sm transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold ${form.goal === v ? "border-gold bg-gold/10 text-gold" : "border-border bg-background text-muted-foreground hover:border-gold/40"}`}
                       >
                         {label}
                       </button>
@@ -379,7 +405,7 @@ function CalculatorPage() {
                     <motion.div
                       className="absolute top-1/2 h-5 w-1 -translate-y-1/2 rounded-full bg-foreground shadow-lg"
                       initial={{ left: "0%" }}
-                      animate={{ left: `${Math.min(100, (result.bmi / 40) * 100)}%` }}
+                      animate={{ left: `${Math.min(100, getSliderPercentage(result.bmi))}%` }}
                       transition={{ duration: 0.8, ease: "easeOut" }}
                     />
                   </div>
@@ -391,17 +417,49 @@ function CalculatorPage() {
                     <span>40+</span>
                   </div>
                 </div>
-                <div className="grid gap-4 md:grid-cols-4">
-                  <Stat
-                    label="Daily Calories"
-                    value={`${result.macros.calories}`}
-                    unit="kcal"
-                    icon={Flame}
-                  />
-                  <Stat label="Protein" value={`${result.macros.protein}`} unit="g" />
-                  <Stat label="Carbs" value={`${result.macros.carbs}`} unit="g" />
-                  <Stat label="Fats" value={`${result.macros.fats}`} unit="g" />
+
+                <div className="grid gap-6 lg:grid-cols-2 items-stretch">
+                  <div className="grid gap-4 grid-cols-2">
+                    <Stat
+                      label="Daily Calories"
+                      value={`${result.macros.calories}`}
+                      unit="kcal"
+                      icon={Flame}
+                      className="col-span-2"
+                    />
+                    <Stat label="Protein" value={`${result.macros.protein}`} unit="g" />
+                    <Stat label="Carbs" value={`${result.macros.carbs}`} unit="g" />
+                    <Stat label="Fats" value={`${result.macros.fats}`} unit="g" className="col-span-2" />
+                  </div>
+                  
+                  <div className="flex flex-col items-center justify-center p-6 rounded-3xl border border-border bg-card/40">
+                    <div className="font-semibold text-xs mb-4 uppercase tracking-wider text-muted-foreground">Calorie Distribution</div>
+                    <ChartContainer config={chartConfig} className="w-full max-w-[180px] aspect-square">
+                      <PieChart>
+                        <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
+                        <Pie
+                          data={[
+                            { name: "protein", value: result.macros.protein * 4, fill: "var(--color-gold)" },
+                            { name: "carbs", value: result.macros.carbs * 4, fill: "var(--color-fire)" },
+                            { name: "fats", value: result.macros.fats * 9, fill: "#3b82f6" },
+                          ]}
+                          dataKey="value"
+                          nameKey="name"
+                          innerRadius={50}
+                          outerRadius={70}
+                          strokeWidth={4}
+                          paddingAngle={2}
+                        />
+                      </PieChart>
+                    </ChartContainer>
+                    <div className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs">
+                      <div className="flex items-center gap-1.5"><div className="h-2.5 w-2.5 rounded-full bg-gold" /> Protein ({Math.round(result.macros.protein * 400 / result.macros.calories)}%)</div>
+                      <div className="flex items-center gap-1.5"><div className="h-2.5 w-2.5 rounded-full bg-fire" /> Carbs ({Math.round(result.macros.carbs * 400 / result.macros.calories)}%)</div>
+                      <div className="flex items-center gap-1.5"><div className="h-2.5 w-2.5 rounded-full bg-blue-500" /> Fats ({Math.round(result.macros.fats * 900 / result.macros.calories)}%)</div>
+                    </div>
+                  </div>
                 </div>
+
                 <div className="grid gap-4 md:grid-cols-2">
                   <Stat
                     label="BMR (Resting Burn)"
@@ -437,7 +495,7 @@ function CalculatorPage() {
                         Book a Free Consultation <ArrowRight className="h-4 w-4" />
                       </Link>
                       <a
-                        href={`https://wa.me/9175200391?text=${encodeURIComponent(`Hi Pravin! My BMI is ${result.bmi} (${result.bmiCat.label}). I'm interested in the ${result.program.name}. Can we chat?`)}`}
+                        href={`https://wa.me/919272432562?text=${encodeURIComponent(`Hi Pravin! My BMI is ${result.bmi} (${result.bmiCat.label}). I'm interested in the ${result.program.name}. Can we chat?`)}`}
                         className="inline-flex items-center gap-2 rounded-full border border-border bg-card/40 px-6 py-3 font-semibold hover:border-gold hover:text-gold"
                       >
                         <MessageCircle className="h-4 w-4" /> Discuss on WhatsApp
@@ -445,7 +503,7 @@ function CalculatorPage() {
                       <button
                         type="button"
                         onClick={reset}
-                        className="rounded-full px-4 py-3 text-sm text-muted-foreground hover:text-foreground"
+                        className="rounded-full px-4 py-3 text-sm text-muted-foreground hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
                       >
                         Recalculate
                       </button>
@@ -490,14 +548,16 @@ function Stat({
   value,
   unit,
   icon: Icon,
+  className,
 }: {
   label: string;
   value: string;
   unit: string;
   icon?: React.ComponentType<{ className?: string }>;
+  className?: string;
 }) {
   return (
-    <div className="rounded-2xl border border-border bg-card/60 p-5">
+    <div className={cn("rounded-2xl border border-border bg-card/60 p-5", className)}>
       <div className="flex items-center gap-2 text-xs uppercase tracking-wider text-muted-foreground">
         {Icon && <Icon className="h-3.5 w-3.5 text-gold" />} {label}
       </div>

@@ -9,6 +9,9 @@ import {
 } from "@tanstack/react-router";
 
 import appCss from "../styles.css?url";
+import { BackToTop } from "@/components/BackToTop";
+import { WhatsAppFab } from "@/components/WhatsAppFab";
+import { FitnessChatbot } from "@/components/FitnessChatbot";
 
 function NotFoundComponent() {
   return (
@@ -80,11 +83,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Pravin Elite Fitness - #1 Personal Trainer in Pune" },
+      { title: "Pravin Elite Fitness - Pune's Premier Personal Trainer" },
       {
         name: "description",
         content:
-          "Pune's most trusted personal trainer. 1500+ transformations. In-Gym, At-Home & Online coaching for fat loss, muscle gain, PCOS & more.",
+          "Pune's premier personal trainer. 1500+ transformations. In-Gym, At-Home & Online coaching for fat loss, muscle gain, PCOS & more.",
       },
       {
         name: "keywords",
@@ -94,7 +97,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { name: "author", content: "Pravin Elite Fitness" },
       { name: "robots", content: "index, follow" },
       { name: "googlebot", content: "index, follow" },
-      { property: "og:title", content: "Pravin Elite Fitness - #1 Personal Trainer in Pune" },
+      { property: "og:title", content: "Pravin Elite Fitness - Pune's Premier Personal Trainer" },
       {
         property: "og:description",
         content:
@@ -105,13 +108,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:image", content: "/logo.png" },
       { property: "og:locale", content: "en_IN" },
       { name: "theme-color", content: "#0A0A0A" },
-      { name: "apple-mobile-web-app-capable", content: "yes" },
+      { name: "mobile-web-app-capable", content: "yes" },
       { name: "apple-mobile-web-app-status-bar-style", content: "black-translucent" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@PravinEliteFitness" },
-      { name: "twitter:title", content: "Pravin Elite Fitness - #1 Personal Trainer in Pune" },
+      { name: "twitter:title", content: "Pravin Elite Fitness - Pune's Premier Personal Trainer" },
       {
         name: "twitter:description",
         content:
@@ -220,6 +223,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
+      <BackToTop />
+      <WhatsAppFab />
+      <FitnessChatbot />
     </QueryClientProvider>
   );
 }

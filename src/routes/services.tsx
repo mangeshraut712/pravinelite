@@ -2,7 +2,6 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Navbar } from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import { WhatsAppFab } from "@/components/WhatsAppFab";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { Section, Eyebrow, Reveal } from "@/components/ui/section";
 import { HeroSection } from "@/components/ui/hero-section";
@@ -15,7 +14,7 @@ export const Route = createFileRoute("/services")({
       {
         name: "description",
         content:
-          "In-Gym, At-Home, Online coaching and Indian nutrition plans by Pune's #1 personal trainer.",
+          "In-Gym, At-Home, Online coaching and Indian nutrition plans by Pune's premier personal trainer.",
       },
       { property: "og:title", content: "Services — In-Gym, At-Home & Online Training in Pune" },
       {
@@ -97,7 +96,6 @@ function ServicesPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <Navbar />
-      <WhatsAppFab />
       <ScrollToTop />
 
       <HeroSection
