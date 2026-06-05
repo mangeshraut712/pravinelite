@@ -281,7 +281,6 @@ Output standard Markdown formatting. Do not output HTML tags. If referring to in
     // Highlight bold text: **text**
     const boldRegex = /\*\*([^*]+)\*\*/g;
 
-    let parsedText = text;
     const elements: React.ReactNode[] = [];
     let lastIndex = 0;
 
