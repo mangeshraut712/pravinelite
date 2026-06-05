@@ -489,6 +489,7 @@ function BlogPage() {
             {categories.map((cat) => (
               <button
                 key={cat}
+                type="button"
                 onClick={() => setActiveCat(cat)}
                 className={`rounded-full border px-4 py-1.5 text-xs font-semibold uppercase tracking-wider transition-all ${
                   activeCat === cat
@@ -525,17 +526,21 @@ function BlogPage() {
                       <Clock className="h-3 w-3" /> {p.read}
                     </span>
                   </div>
-                  <h2
-                    onClick={() => handleSelectPost(p.slug)}
-                    className="mt-6 font-display text-2xl leading-tight tracking-wide transition-colors group-hover:text-gold md:text-3xl cursor-pointer"
-                  >
-                    {p.title}
+                  <h2 className="mt-6 font-display text-2xl leading-tight tracking-wide transition-colors group-hover:text-gold md:text-3xl">
+                    <button
+                      type="button"
+                      onClick={() => handleSelectPost(p.slug)}
+                      className="text-left w-full cursor-pointer focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-gold rounded hover:text-gold"
+                    >
+                      {p.title}
+                    </button>
                   </h2>
                   <p className="mt-4 flex-1 text-sm leading-relaxed text-muted-foreground">
                     {p.excerpt}
                   </p>
                   <button
                     onClick={() => handleSelectPost(p.slug)}
+                    type="button"
                     className="mt-6 inline-flex items-center gap-2 self-start text-sm font-semibold text-gold transition-all hover:text-gold-light group/link cursor-pointer bg-transparent border-0"
                   >
                     Read article{" "}
@@ -554,6 +559,7 @@ function BlogPage() {
                   setSearch("");
                   setActiveCat("All");
                 }}
+                type="button"
                 className="mt-4 text-sm font-semibold text-gold hover:text-gold-light"
               >
                 Clear filters
@@ -602,6 +608,7 @@ function BlogPage() {
               {/* Close Button */}
               <button
                 onClick={() => handleSelectPost(null)}
+                type="button"
                 className="absolute right-4 top-4 rounded-full border border-border p-2 text-muted-foreground hover:text-foreground transition-colors cursor-pointer bg-background"
                 aria-label="Close article"
               >
@@ -634,8 +641,8 @@ function BlogPage() {
 
               {/* Article Content */}
               <div className="space-y-8 text-muted-foreground leading-relaxed">
-                {activeArticle.sections.map((section, idx) => (
-                  <div key={idx} className="space-y-4">
+                {activeArticle.sections.map((section, sectionIndex) => (
+                  <div key={section.heading || `sec-${sectionIndex}`} className="space-y-4">
                     {section.heading && (
                       <h2 className="font-display text-2xl tracking-wide text-foreground mt-6">
                         {section.heading}

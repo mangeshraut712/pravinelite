@@ -10,8 +10,9 @@ const items = [
   { id: "consult", text: "FREE 30-MIN CONSULT" },
 ];
 
+const row = [...items, ...items];
+
 export function MarqueeBar() {
-  const row = [...items, ...items];
   return (
     <div className="relative overflow-hidden border-y border-gold/20 bg-card/40 py-5">
       <LazyMotion features={domAnimation}>

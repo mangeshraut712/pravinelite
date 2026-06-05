@@ -1,0 +1,26 @@
+{
+  "ignore": {
+    "files": [
+      "src/components/ui/**",
+      "src/integrations/supabase/types.ts",
+      "src/integrations/supabase/auth-attacher.ts",
+      "src/integrations/supabase/auth-middleware.ts",
+      "src/integrations/supabase/client.server.ts",
+      "src/hooks/use-mobile.tsx"
+    ],
+    "rules": [
+      "deslop/unused-dependency",
+      "deslop/unused-dev-dependency",
+      "deslop/unused-file",
+      "react-doctor/use-lazy-motion",
+      "react-doctor/no-giant-component",
+      "react-doctor/prefer-useReducer",
+      "react-doctor/no-multi-comp",
+      "react-doctor/only-export-components",
+      "react-doctor/prefer-dynamic-import",
+      "react-doctor/no-prevent-default",
+      "react-doctor/no-initialize-state",
+      "react-doctor/no-scale-from-zero"
+    ]
+  }
+}

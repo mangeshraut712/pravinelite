@@ -52,7 +52,6 @@ export function Navbar() {
         "fixed top-0 left-0 right-0 z-50 transition-all duration-300",
         scrolled ? "glass py-3 shadow-lg" : "bg-transparent py-5",
       )}
-      role="banner"
     >
       <div className="mx-auto flex max-w-7xl items-center justify-between px-6">
         <Link
@@ -71,11 +70,7 @@ export function Navbar() {
           />
         </Link>
 
-        <nav
-          className="hidden items-center gap-1 lg:flex"
-          role="navigation"
-          aria-label="Main navigation"
-        >
+        <nav className="hidden items-center gap-1 lg:flex" aria-label="Main navigation">
           {links.map((l) => {
             const isActive = routerState.location.pathname === l.to;
             return (

@@ -96,6 +96,186 @@ const LOCAL_RESPONSES: LocalResponse[] = [
 const DEFAULT_FALLBACK =
   "🤖 **Pravin Elite Virtual Assistant**\n\nI couldn't quite find a direct match for that. No worries! Here is what you can do:\n• Check out our coaching programs: [Services & Programs](/services)\n• Calculate your daily calorie macros: [BMI & Macro Calculator](/calculator)\n• Book a free diagnostic call: [Booking Page](/booking)\n• Speak to Pravin directly: [WhatsApp Chat](https://wa.me/919272432562)";
 
+const quickReplies = [
+  { label: "🌸 PCOS Program", query: "tell me about your PCOS program" },
+  { label: "🥗 Indian Diet Plan", query: "do you make customized Indian diets?" },
+  { label: "💰 Coaching Pricing", query: "what are your coaching package prices?" },
+  { label: "📅 Book Consultation", query: "how do I book a free consultation?" },
+];
+
+// Local parser engine
+const parseLocalReply = (query: string): string => {
+  const cleanQuery = query.toLowerCase().trim();
+  for (const item of LOCAL_RESPONSES) {
+    if (item.keywords.some((kw) => cleanQuery.includes(kw))) {
+      return item.response;
+    }
+  }
+  return DEFAULT_FALLBACK;
+};
+
+// Online Gemini API request
+const fetchGeminiReply = async (userMsg: string, history: Message[]): Promise<string> => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("Gemini API key is not configured.");
+  }
+
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+
+  // Convert message history to Gemini format (roles: 'user' and 'model')
+  // Exclude welcome message to avoid bloat, slice last 10 messages for context
+  const recentHistory = history
+    .filter((m) => m.id !== "welcome")
+    .slice(-10)
+    .map((m) => ({
+      role: m.sender === "user" ? "user" : "model",
+      parts: [{ text: m.text }],
+    }));
+
+  recentHistory.push({
+    role: "user",
+    parts: [{ text: userMsg }],
+  });
+
+  const systemInstruction = {
+    parts: [
+      {
+        text: `You are the Virtual AI Fitness Coach for "Pravin Elite Fitness" (founded by Pravin, a premium certified personal trainer in Pune, India, with over 5 years of experience and 1500+ successful body transformations).
+Keep your answers brief, engaging, encouraging, and highly professional. Limit responses to 2-3 short paragraphs at most. Avoid verbose listicle spam.
+Answer questions about weight loss, muscle gain, custom Indian diets (including vegetarian, paneer/tofu protein plans, non-vegetarian chicken/egg splits, and Jain portion control/timing), PCOS/PCOD coaching, and functional training.
+Reference Pravin's pricing plans:
+- 45-Day Intense Shred (for fast fat loss)
+- 90-Day Elite Transformation (muscle build and body recomposition)
+- Monthly Premium Online/Hybrid Coaching
+Encourage users to book a free 15-minute consultation via the Booking Page (/booking), contact page (/contact), or text on WhatsApp (https://wa.me/919272432562).
+Pravin's location: Pune, India (in-person, at-home, and online).
+Hours: Mon-Sat, 6:00 AM to 9:00 PM IST.
+Output standard Markdown formatting. Do not output HTML tags. If referring to internal pages, use Markdown links (e.g., [Booking Page](/booking), [Calculator](/calculator), [Contact](/contact)).`,
+      },
+    ],
+  };
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      contents: recentHistory,
+      systemInstruction: systemInstruction,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`API error: ${response.statusText}`);
+  }
+
+  const data = await response.json();
+  const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!replyText) {
+    throw new Error("No response text found in Gemini output.");
+  }
+
+  return replyText;
+};
+
+// Help format bold segments
+const parseBoldText = (textSegment: string): React.ReactNode[] => {
+  const boldRegex = /\*\*([^*]+)\*\*/g;
+  const parts: React.ReactNode[] = [];
+  let lastIdx = 0;
+  let match;
+
+  while ((match = boldRegex.exec(textSegment)) !== null) {
+    if (match.index > lastIdx) {
+      parts.push(textSegment.substring(lastIdx, match.index));
+    }
+    parts.push(
+      <strong key={`bold-${match.index}`} className="font-bold text-foreground">
+        {match[1]}
+      </strong>,
+    );
+    lastIdx = boldRegex.lastIndex;
+  }
+
+  if (lastIdx < textSegment.length) {
+    parts.push(textSegment.substring(lastIdx));
+  }
+
+  return parts;
+};
+
+interface MessageTextProps {
+  text: string;
+  onLinkClick: () => void;
+}
+
+const MessageText = ({ text, onLinkClick }: MessageTextProps) => {
+  // Basic Markdown parser for links: [text](href)
+  const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
+
+  const elements: React.ReactNode[] = [];
+  let lastIndex = 0;
+
+  // We will parse formatting sequentially
+  // Since this is client-side, we do a basic regex loop to extract links and text
+  const matches: { index: number; length: number; element: React.ReactNode }[] = [];
+
+  // Reset regex indexes
+  linkRegex.lastIndex = 0;
+  let linkMatch;
+  while ((linkMatch = linkRegex.exec(text)) !== null) {
+    const [fullMatch, linkText, href] = linkMatch;
+    const matchIndex = linkMatch.index;
+
+    const isExternal = href.startsWith("http");
+    const element = isExternal ? (
+      <a
+        key={`link-${matchIndex}`}
+        href={href}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-gold font-medium hover:underline inline-flex items-center gap-0.5"
+      >
+        {linkText}
+      </a>
+    ) : (
+      <Link
+        key={`link-${matchIndex}`}
+        to={href}
+        className="text-gold font-semibold hover:underline inline-flex items-center gap-0.5"
+        onClick={onLinkClick} // Close chatbot window when routing internally
+      >
+        {linkText}
+      </Link>
+    );
+
+    matches.push({ index: matchIndex, length: fullMatch.length, element });
+  }
+
+  // Sort matches by index
+  matches.sort((a, b) => a.index - b.index);
+
+  // Build elements array
+  matches.forEach((match) => {
+    if (match.index > lastIndex) {
+      const textSegment = text.substring(lastIndex, match.index);
+      elements.push(...parseBoldText(textSegment));
+    }
+    elements.push(match.element);
+    lastIndex = match.index + match.length;
+  });
+
+  if (lastIndex < text.length) {
+    elements.push(...parseBoldText(text.substring(lastIndex)));
+  }
+
+  return (
+    <div className="space-y-1.5 whitespace-pre-wrap">{elements.length > 0 ? elements : text}</div>
+  );
+};
+
 export function FitnessChatbot() {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
@@ -137,83 +317,6 @@ export function FitnessChatbot() {
     if (!isOpen) {
       setHasNewBadge(false);
     }
-  };
-
-  // Local parser engine
-  const parseLocalReply = (query: string): string => {
-    const cleanQuery = query.toLowerCase().trim();
-    for (const item of LOCAL_RESPONSES) {
-      if (item.keywords.some((kw) => cleanQuery.includes(kw))) {
-        return item.response;
-      }
-    }
-    return DEFAULT_FALLBACK;
-  };
-
-  // Online Gemini API request
-  const fetchGeminiReply = async (userMsg: string, history: Message[]): Promise<string> => {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    if (!apiKey) {
-      throw new Error("Gemini API key is not configured.");
-    }
-
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-
-    // Convert message history to Gemini format (roles: 'user' and 'model')
-    // Exclude welcome message to avoid bloat, slice last 10 messages for context
-    const recentHistory = history
-      .filter((m) => m.id !== "welcome")
-      .slice(-10)
-      .map((m) => ({
-        role: m.sender === "user" ? "user" : "model",
-        parts: [{ text: m.text }],
-      }));
-
-    recentHistory.push({
-      role: "user",
-      parts: [{ text: userMsg }],
-    });
-
-    const systemInstruction = {
-      parts: [
-        {
-          text: `You are the Virtual AI Fitness Coach for "Pravin Elite Fitness" (founded by Pravin, a premium certified personal trainer in Pune, India, with over 5 years of experience and 1500+ successful body transformations).
-Keep your answers brief, engaging, encouraging, and highly professional. Limit responses to 2-3 short paragraphs at most. Avoid verbose listicle spam.
-Answer questions about weight loss, muscle gain, custom Indian diets (including vegetarian, paneer/tofu protein plans, non-vegetarian chicken/egg splits, and Jain portion control/timing), PCOS/PCOD coaching, and functional training.
-Reference Pravin's pricing plans:
-- 45-Day Intense Shred (for fast fat loss)
-- 90-Day Elite Transformation (muscle build and body recomposition)
-- Monthly Premium Online/Hybrid Coaching
-Encourage users to book a free 15-minute consultation via the Booking Page (/booking), contact page (/contact), or text on WhatsApp (https://wa.me/919272432562).
-Pravin's location: Pune, India (in-person, at-home, and online).
-Hours: Mon-Sat, 6:00 AM to 9:00 PM IST.
-Output standard Markdown formatting. Do not output HTML tags. If referring to internal pages, use Markdown links (e.g., [Booking Page](/booking), [Calculator](/calculator), [Contact](/contact)).`,
-        },
-      ],
-    };
-
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        contents: recentHistory,
-        systemInstruction: systemInstruction,
-      }),
-    });
-
-    if (!response.ok) {
-      throw new Error(`API error: ${response.statusText}`);
-    }
-
-    const data = await response.json();
-    const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-    if (!replyText) {
-      throw new Error("No response text found in Gemini output.");
-    }
-
-    return replyText;
   };
 
   const handleSendMessage = async (textToSend: string) => {
@@ -273,107 +376,6 @@ Output standard Markdown formatting. Do not output HTML tags. If referring to in
       setIsLoading(false);
     }
   };
-
-  const renderMessageText = (text: string) => {
-    // Basic Markdown parser for links: [text](href)
-    const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-
-    // Highlight bold text: **text**
-    const boldRegex = /\*\*([^*]+)\*\*/g;
-
-    const elements: React.ReactNode[] = [];
-    let lastIndex = 0;
-
-    // We will parse formatting sequentially
-    // Since this is client-side, we do a basic regex loop to extract links and text
-    const matches: { index: number; length: number; element: React.ReactNode }[] = [];
-
-    // Reset regex indexes
-    linkRegex.lastIndex = 0;
-    let linkMatch;
-    while ((linkMatch = linkRegex.exec(text)) !== null) {
-      const [fullMatch, linkText, href] = linkMatch;
-      const index = linkMatch.index;
-
-      const isExternal = href.startsWith("http");
-      const element = isExternal ? (
-        <a
-          key={`link-${index}`}
-          href={href}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-gold font-medium hover:underline inline-flex items-center gap-0.5"
-        >
-          {linkText}
-        </a>
-      ) : (
-        <Link
-          key={`link-${index}`}
-          to={href}
-          className="text-gold font-semibold hover:underline inline-flex items-center gap-0.5"
-          onClick={() => setIsOpen(false)} // Close chatbot window when routing internally
-        >
-          {linkText}
-        </Link>
-      );
-
-      matches.push({ index, length: fullMatch.length, element });
-    }
-
-    // Sort matches by index
-    matches.sort((a, b) => a.index - b.index);
-
-    // Build elements array
-    matches.forEach((match) => {
-      if (match.index > lastIndex) {
-        const textSegment = text.substring(lastIndex, match.index);
-        elements.push(...parseBoldText(textSegment));
-      }
-      elements.push(match.element);
-      lastIndex = match.index + match.length;
-    });
-
-    if (lastIndex < text.length) {
-      elements.push(...parseBoldText(text.substring(lastIndex)));
-    }
-
-    return (
-      <div className="space-y-1.5 whitespace-pre-wrap">{elements.length > 0 ? elements : text}</div>
-    );
-  };
-
-  // Help format bold segments
-  const parseBoldText = (textSegment: string): React.ReactNode[] => {
-    const boldRegex = /\*\*([^*]+)\*\*/g;
-    const parts: React.ReactNode[] = [];
-    let lastIdx = 0;
-    let match;
-
-    while ((match = boldRegex.exec(textSegment)) !== null) {
-      if (match.index > lastIdx) {
-        parts.push(textSegment.substring(lastIdx, match.index));
-      }
-      parts.push(
-        <strong key={`bold-${match.index}`} className="font-bold text-foreground">
-          {match[1]}
-        </strong>,
-      );
-      lastIdx = boldRegex.lastIndex;
-    }
-
-    if (lastIdx < textSegment.length) {
-      parts.push(textSegment.substring(lastIdx));
-    }
-
-    return parts;
-  };
-
-  const quickReplies = [
-    { label: "🌸 PCOS Program", query: "tell me about your PCOS program" },
-    { label: "🥗 Indian Diet Plan", query: "do you make customized Indian diets?" },
-    { label: "💰 Coaching Pricing", query: "what are your coaching package prices?" },
-    { label: "📅 Book Consultation", query: "how do I book a free consultation?" },
-  ];
 
   return (
     <>
@@ -460,7 +462,7 @@ Output standard Markdown formatting. Do not output HTML tags. If referring to in
                         : "bg-secondary/40 text-foreground border border-border/40 rounded-tl-none"
                     }`}
                   >
-                    {renderMessageText(msg.text)}
+                    <MessageText text={msg.text} onLinkClick={() => setIsOpen(false)} />
                     <span
                       className={`block text-[9px] mt-1 text-right ${
                         msg.sender === "user" ? "text-background/70" : "text-muted-foreground"
@@ -491,9 +493,9 @@ Output standard Markdown formatting. Do not output HTML tags. If referring to in
                   <Sparkles className="size-3 text-gold" /> Popular Questions
                 </span>
                 <div className="flex flex-wrap gap-1.5 py-1">
-                  {quickReplies.map((reply, i) => (
+                  {quickReplies.map((reply) => (
                     <button
-                      key={i}
+                      key={reply.label}
                       onClick={() => handleSendMessage(reply.query)}
                       type="button"
                       className="text-xs px-2.5 py-1 rounded-full border border-gold/20 bg-gold/5 text-gold hover:bg-gold/15 transition-colors cursor-pointer focus:outline-none focus:ring-1 focus:ring-gold"
@@ -518,6 +520,7 @@ Output standard Markdown formatting. Do not output HTML tags. If referring to in
                 value={inputValue}
                 onChange={(e) => setInputValue(e.target.value)}
                 placeholder="Ask about diet, PCOS, pricing..."
+                aria-label="Type your message"
                 className="flex-1 bg-secondary/50 border border-border/50 rounded-full px-4 py-2 text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-gold/60 focus:ring-1 focus:ring-gold/40"
               />
               <button

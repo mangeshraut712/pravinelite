@@ -40,7 +40,7 @@ export function WhatsAppFab() {
         ref={buttonRef}
         href="https://wa.me/919272432562?text=Hi%20Pravin%2C%20I%27m%20interested%20in%20your%20training%20programs"
         target="_blank"
-        rel="noopener"
+        rel="noopener noreferrer"
         className="flex size-14 items-center justify-center rounded-full bg-[#25D366] shadow-2xl shadow-[#25D366]/40 hover:shadow-[#25D366]/60 transition-shadow hover:scale-110 active:scale-95"
         aria-label="Chat on WhatsApp"
       >

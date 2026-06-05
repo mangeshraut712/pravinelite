@@ -9,7 +9,7 @@ export function Footer() {
   const [subscribed, setSubscribed] = useState(false);
 
   return (
-    <footer className="border-t border-border bg-card/40" role="contentinfo">
+    <footer className="border-t border-border bg-card/40">
       <div className="mx-auto max-w-7xl px-6 py-16">
         <div className="grid gap-12 md:grid-cols-5">
           {/* Brand */}
@@ -197,7 +197,9 @@ export function Footer() {
       {/* Bottom bar */}
       <div className="border-t border-border">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-3 px-6 py-5 text-xs text-muted-foreground md:flex-row">
-          <span>© {new Date().getFullYear()} Pravin Elite Fitness. All rights reserved.</span>
+          <span suppressHydrationWarning>
+            © {new Date().getFullYear()} Pravin Elite Fitness. All rights reserved.
+          </span>
         </div>
       </div>
     </footer>

@@ -273,7 +273,10 @@ ${parsed.data.notes ? `Message: ${parsed.data.notes}` : ""}`;
                       </p>
                     )}
                   </div>
-                  <button className="group w-full rounded-full bg-gradient-gold px-6 py-3.5 font-semibold text-background shadow-gold transition-all hover:scale-[1.02] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+                  <button
+                    type="submit"
+                    className="group w-full rounded-full bg-gradient-gold px-6 py-3.5 font-semibold text-background shadow-gold transition-all hover:scale-[1.02] hover:shadow-lg focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  >
                     <span className="flex items-center justify-center gap-2">
                       Start My Journey
                       <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
