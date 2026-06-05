@@ -1,19 +1,19 @@
 # Pravin Elite Fitness
 
-A cutting-edge, high-performance fitness website built with 2026 web technologies. Features React 19, TanStack Start, and modern CSS platform features for exceptional performance and user experience.
+A production-ready fitness website for Pravin Elite Fitness, built with React 19, TanStack Start, Vercel SSR, and Supabase. It includes lead capture flows, an India-specific calculator, and a hybrid fitness chatbot that uses Gemini on the server when configured and falls back to a local expert mode when it is not.
 
 [![Live Site](https://img.shields.io/badge/Live-pravinelite--main.vercel.app-green?style=for-the-badge&logo=vercel)](https://pravinelite-main.vercel.app)
 [![License](https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge)](LICENSE)
 [![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)](https://react.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.6-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
 
 ## 🚀 2026 Tech Stack
 
 ### Core Framework
 
-- **React 19** - Latest React with new Server Components, Actions, and use() API
-- **TanStack Start** - Full-stack React framework with built-in SSR, streaming, and file-based routing
-- **TypeScript 5.6** - Type-safe development with enhanced type inference
+- **React 19** - Modern React runtime with improved compiler-era ergonomics
+- **TanStack Start** - Full-stack React framework with SSR and file-based routing
+- **TypeScript 5.8** - Type-safe development with strict checking
 - **Vite 7** - Lightning-fast build tool with native ESM support
 
 ### Styling & UI
@@ -45,7 +45,7 @@ A cutting-edge, high-performance fitness website built with 2026 web technologie
 ### Backend & Database
 
 - **Supabase** - Open-source Firebase alternative with PostgreSQL, Auth, and Realtime
-- **Cloudflare Workers** - Edge deployment with global CDN
+- **Nitro + Vercel** - SSR runtime and deployment target for the production app
 
 ### Development Tools
 
@@ -90,6 +90,7 @@ A cutting-edge, high-performance fitness website built with 2026 web technologie
 - **Native Popovers** - Using CSS Popover API for tooltips and menus
 - **Smooth Scrolling** - CSS smooth scroll behavior
 - **Prefetching** - Intent-based route preloading for instant navigation
+- **Hybrid Fitness Chatbot** - Server-backed Gemini replies when configured, local expert fallback when not
 
 ## 📄 Pages
 
@@ -101,6 +102,7 @@ A cutting-edge, high-performance fitness website built with 2026 web technologie
 - **Blog** (`/blog`) - Articles on nutrition, PCOS, strength training with search and filters
 - **Contact** (`/contact`) - Contact form with WhatsApp integration
 - **Booking** (`/booking`) - Free consultation booking with calendar and time slots
+- **API Chat Route** (`/api/chat`) - Chat health check and server-side Gemini proxy
 
 ## 🛠️ Getting Started
 
@@ -117,11 +119,11 @@ git clone https://github.com/mangeshraut712/pravinelite.git
 cd pravinelite-main
 
 # Install dependencies
-npm install
+npm ci
 
 # Copy environment variables
-cp .env.example .env
-# Edit .env with your Supabase credentials
+cp .env.example .env.local
+# Edit .env.local with your Supabase credentials
 ```
 
 ### Development
@@ -132,6 +134,11 @@ npm run dev
 
 # Open http://localhost:8080
 ```
+
+The chatbot works in two modes during development:
+
+- `GEMINI_API_KEY` present: server-side Gemini mode through `/api/chat`
+- `GEMINI_API_KEY` absent: local expert fallback mode
 
 ### Build
 
@@ -150,13 +157,13 @@ npm run preview
 npx tsc --noEmit
 
 # Linting
-npx eslint src --ext .ts,.tsx
+npm run lint
 
 # Format code
-npx prettier --write "src/**/*.{ts,tsx,css}"
+npm run format
 
 # React Codebase Audit (React Doctor)
-npx react-doctor@latest .
+npx react-doctor --score .
 ```
 
 ## 📁 Project Structure
@@ -176,8 +183,9 @@ src/
 │   │   ├── button.tsx
 │   │   ├── card.tsx
 │   │   └── ...
-│   ├── HeroSection.tsx     # Reusable hero section
-│   ├── ScrollToTop.tsx      # Auto-scroll on route change
+│   ├── BackToTop.tsx       # Back-to-top floating action
+│   ├── FitnessChatbot.tsx  # Hybrid online/offline chatbot
+│   ├── ScrollToTop.tsx     # Auto-scroll on route change
 │   └── WhatsAppFab.tsx     # Floating WhatsApp button
 ├── integrations/
 │   └── supabase/            # Supabase integration
@@ -256,8 +264,8 @@ vercel --prod
 The project is configured with:
 
 - Automatic builds on git push
-- Edge deployment
-- Environment variables from `.env`
+- Nitro SSR output for Vercel
+- Environment variables from the Vercel project settings
 - Custom domain support
 
 ### Manual Deployment
@@ -275,8 +283,14 @@ npm run build
 
 ```env
 # Supabase
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+VITE_SUPABASE_URL=https://your-project.supabase.co
+VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_publishable_key
+VITE_SUPABASE_PROJECT_ID=your_supabase_project_id
+
+# Optional server-side chatbot key
+GEMINI_API_KEY=your_gemini_api_key
 ```
 
 ### Vercel Configuration
@@ -284,17 +298,21 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 See `vercel.json` for build settings:
 
 - Build command: `npm run build`
-- Output directory: `dist/client`
-- Framework: None (TanStack Start custom)
+- Dev command: `npm run dev`
+- Install command: `npm ci`
+- Nitro generates deployable output in `.vercel/output`
 
-## 📊 Performance
+## 📊 Quality Snapshot
 
-- **Lighthouse Score**: 95+ (Performance, Accessibility, Best Practices, SEO)
-- **React Doctor Codebase Health**: 62/100 (Bugs: 23, Performance: 26, Accessibility: 13, Security: 2, Maintainability: 260)
-- **First Contentful Paint**: < 1s
-- **Time to Interactive**: < 2s
-- **Bundle Size**: < 500KB (gzipped)
-- **Image Optimization**: WebP with responsive sizes
+Latest local production-preview checks on 2026-06-06:
+
+- **React Doctor**: `100 / 100`
+- **Lighthouse Mobile**: Performance `78`, Accessibility `98`, Best Practices `100`, SEO `92`
+- **Lighthouse Desktop**: Performance `96`, Accessibility `98`, Best Practices `100`, SEO `92`
+
+Current performance bottleneck:
+
+- The homepage mobile LCP is still image-heavy, primarily due to the hero and portrait assets
 
 ## 🤝 Contributing
 

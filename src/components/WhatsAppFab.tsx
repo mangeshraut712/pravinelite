@@ -1,26 +1,45 @@
 import { MessageCircle, X } from "lucide-react";
-import { useRef, useEffect } from "react";
+import { useEffect, useRef } from "react";
 
-export function WhatsAppFab() {
+interface WhatsAppFabProps {
+  hidden?: boolean;
+}
+
+export function WhatsAppFab({ hidden = false }: WhatsAppFabProps) {
   const popoverRef = useRef<HTMLDivElement>(null);
-  const buttonRef = useRef<HTMLAnchorElement>(null);
+  const hasAutoPromptedRef = useRef(false);
+
+  useEffect(() => {
+    const popover = popoverRef.current;
+    if (!popover || !hidden) return;
+
+    if (popover.matches(":popover-open")) {
+      popover.hidePopover();
+    }
+  }, [hidden]);
 
   // Auto-show popover after 5 seconds
   useEffect(() => {
     const popover = popoverRef.current;
-    if (!popover) return;
+    if (!popover || hidden || hasAutoPromptedRef.current) return;
 
     const timer = setTimeout(() => {
       if (!popover.matches(":popover-open")) {
+        hasAutoPromptedRef.current = true;
         popover.showPopover();
       }
     }, 5000);
 
     return () => clearTimeout(timer);
-  }, []);
+  }, [hidden]);
 
   return (
-    <div className="fixed bottom-6 right-6 z-40 flex flex-col items-end gap-2">
+    <div
+      className={`fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+1rem)] z-40 flex flex-col items-end gap-2 transition-opacity duration-200 sm:right-6 sm:bottom-[calc(env(safe-area-inset-bottom)+1.5rem)] ${
+        hidden ? "pointer-events-none opacity-0" : "opacity-100"
+      }`}
+      aria-hidden={hidden}
+    >
       {/* Native popover tooltip — uses HTML Popover API (2025+), no JS animation overhead */}
       <div ref={popoverRef} id="whatsapp-tooltip" popover="auto" className="popover-native">
         <button
@@ -37,7 +56,6 @@ export function WhatsAppFab() {
       </div>
 
       <a
-        ref={buttonRef}
         href="https://wa.me/919272432562?text=Hi%20Pravin%2C%20I%27m%20interested%20in%20your%20training%20programs"
         target="_blank"
         rel="noopener noreferrer"

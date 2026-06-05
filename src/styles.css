@@ -241,8 +241,8 @@
   .popover-native {
     position: fixed;
     inset: auto;
-    bottom: 6rem;
-    right: 1.5rem;
+    bottom: calc(env(safe-area-inset-bottom) + 1rem);
+    right: calc(1.5rem + 4.5rem);
     margin: 0;
     border: 1px solid oklch(0.78 0.14 80 / 0.3);
     border-radius: 16px;
@@ -251,7 +251,7 @@
     color: oklch(0.97 0.01 80);
     backdrop-filter: blur(16px);
     box-shadow: 0 20px 60px oklch(0 0 0 / 0.5);
-    max-width: 200px;
+    max-width: min(220px, calc(100vw - 7rem));
     overflow: visible;
     /* Popover animation via @starting-style */
     opacity: 0;
@@ -273,6 +273,14 @@
 
   .popover-native::backdrop {
     background: transparent;
+  }
+
+  @media (max-width: 640px) {
+    .popover-native {
+      right: calc(1rem + 4.5rem);
+      bottom: calc(env(safe-area-inset-bottom) + 1rem);
+      max-width: min(220px, calc(100vw - 6rem));
+    }
   }
 
   /* Focus ring with accent color */

@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { MessageSquareText, Send, X, Dumbbell, Sparkles, Loader2, Compass } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 
 // Types for chat messages
@@ -11,6 +11,8 @@ interface Message {
   timestamp: Date;
   isFallback?: boolean;
 }
+
+type AssistantMode = "checking" | "online" | "offline";
 
 // Predefined local NLP response structure
 interface LocalResponse {
@@ -114,70 +116,32 @@ const parseLocalReply = (query: string): string => {
   return DEFAULT_FALLBACK;
 };
 
-// Online Gemini API request
-const fetchGeminiReply = async (userMsg: string, history: Message[]): Promise<string> => {
-  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-  if (!apiKey) {
-    throw new Error("Gemini API key is not configured.");
-  }
-
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
-
-  // Convert message history to Gemini format (roles: 'user' and 'model')
-  // Exclude welcome message to avoid bloat, slice last 10 messages for context
-  const recentHistory = history
-    .filter((m) => m.id !== "welcome")
-    .slice(-10)
-    .map((m) => ({
-      role: m.sender === "user" ? "user" : "model",
-      parts: [{ text: m.text }],
-    }));
-
-  recentHistory.push({
-    role: "user",
-    parts: [{ text: userMsg }],
-  });
-
-  const systemInstruction = {
-    parts: [
-      {
-        text: `You are the Virtual AI Fitness Coach for "Pravin Elite Fitness" (founded by Pravin, a premium certified personal trainer in Pune, India, with over 5 years of experience and 1500+ successful body transformations).
-Keep your answers brief, engaging, encouraging, and highly professional. Limit responses to 2-3 short paragraphs at most. Avoid verbose listicle spam.
-Answer questions about weight loss, muscle gain, custom Indian diets (including vegetarian, paneer/tofu protein plans, non-vegetarian chicken/egg splits, and Jain portion control/timing), PCOS/PCOD coaching, and functional training.
-Reference Pravin's pricing plans:
-- 45-Day Intense Shred (for fast fat loss)
-- 90-Day Elite Transformation (muscle build and body recomposition)
-- Monthly Premium Online/Hybrid Coaching
-Encourage users to book a free 15-minute consultation via the Booking Page (/booking), contact page (/contact), or text on WhatsApp (https://wa.me/919272432562).
-Pravin's location: Pune, India (in-person, at-home, and online).
-Hours: Mon-Sat, 6:00 AM to 9:00 PM IST.
-Output standard Markdown formatting. Do not output HTML tags. If referring to internal pages, use Markdown links (e.g., [Booking Page](/booking), [Calculator](/calculator), [Contact](/contact)).`,
-      },
-    ],
-  };
-
-  const response = await fetch(endpoint, {
+const fetchServerReply = async (userMsg: string, history: Message[]): Promise<string> => {
+  const response = await fetch("/api/chat", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      contents: recentHistory,
-      systemInstruction: systemInstruction,
+      userMessage: userMsg,
+      history: history
+        .filter((message) => message.id !== "welcome")
+        .slice(-10)
+        .map(({ sender, text }) => ({ sender, text })),
     }),
   });
 
   if (!response.ok) {
-    throw new Error(`API error: ${response.statusText}`);
+    const errorBody = (await response.json().catch(() => null)) as { error?: string } | null;
+    throw new Error(errorBody?.error || `Chat API error: ${response.status}`);
   }
 
-  const data = await response.json();
-  const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
-  if (!replyText) {
-    throw new Error("No response text found in Gemini output.");
+  const data = (await response.json()) as { reply?: string };
+  if (!data.reply) {
+    throw new Error("No response text found in chat API output.");
   }
 
-  return replyText;
+  return data.reply;
 };
 
 // Help format bold segments
@@ -276,8 +240,12 @@ const MessageText = ({ text, onLinkClick }: MessageTextProps) => {
   );
 };
 
-export function FitnessChatbot() {
-  const [isOpen, setIsOpen] = useState(false);
+interface FitnessChatbotProps {
+  isOpen: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+export function FitnessChatbot({ isOpen, onOpenChange }: FitnessChatbotProps) {
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "welcome",
@@ -289,15 +257,12 @@ export function FitnessChatbot() {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [hasNewBadge, setHasNewBadge] = useState(false);
-  const [isOnline, setIsOnline] = useState(false);
+  const [assistantMode, setAssistantMode] = useState<AssistantMode>("checking");
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const hasApiKey = Boolean(import.meta.env.VITE_GEMINI_API_KEY);
+  const reduceMotion = useReducedMotion();
 
-  // Check connectivity and verify key presence on load
   useEffect(() => {
-    setIsOnline(hasApiKey);
-
     // Pulse notification badge after 6 seconds if unopened
     const timer = setTimeout(() => {
       if (!isOpen) {
@@ -305,15 +270,38 @@ export function FitnessChatbot() {
       }
     }, 6000);
     return () => clearTimeout(timer);
-  }, [isOpen, hasApiKey]);
+  }, [isOpen]);
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
 
+  useEffect(() => {
+    const controller = new AbortController();
+
+    fetch("/api/chat", {
+      method: "GET",
+      cache: "no-store",
+      signal: controller.signal,
+    })
+      .then(async (response) => {
+        if (!response.ok) {
+          throw new Error(`Health check failed: ${response.status}`);
+        }
+
+        const data = (await response.json()) as { online?: boolean };
+        setAssistantMode(data.online ? "online" : "offline");
+      })
+      .catch(() => {
+        setAssistantMode("offline");
+      });
+
+    return () => controller.abort();
+  }, []);
+
   const handleOpenToggle = () => {
-    setIsOpen(!isOpen);
+    onOpenChange(!isOpen);
     if (!isOpen) {
       setHasNewBadge(false);
     }
@@ -334,33 +322,20 @@ export function FitnessChatbot() {
     setIsLoading(true);
 
     try {
-      if (hasApiKey) {
-        const reply = await fetchGeminiReply(textToSend, messages);
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: `bot-${Date.now()}`,
-            sender: "bot",
-            text: reply,
-            timestamp: new Date(),
-          },
-        ]);
-      } else {
-        // Run local parsing directly
-        const localReply = parseLocalReply(textToSend);
-        setMessages((prev) => [
-          ...prev,
-          {
-            id: `bot-${Date.now()}`,
-            sender: "bot",
-            text: localReply,
-            timestamp: new Date(),
-            isFallback: true,
-          },
-        ]);
-      }
+      const reply = await fetchServerReply(textToSend, messages);
+      setAssistantMode("online");
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `bot-${Date.now()}`,
+          sender: "bot",
+          text: reply,
+          timestamp: new Date(),
+        },
+      ]);
     } catch (error) {
-      console.warn("Gemini connection error, running local NLP fallback", error);
+      console.warn("Chat API unavailable, running local NLP fallback", error);
+      setAssistantMode("offline");
       const localReply = parseLocalReply(textToSend);
       setMessages((prev) => [
         ...prev,
@@ -380,7 +355,7 @@ export function FitnessChatbot() {
   return (
     <>
       {/* Floating Action Button */}
-      <div className="fixed bottom-24 right-6 z-50">
+      <div className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] z-50 sm:right-6">
         <button
           onClick={handleOpenToggle}
           type="button"
@@ -409,11 +384,13 @@ export function FitnessChatbot() {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, y: 20 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.9, y: 20 }}
-            transition={{ type: "spring", damping: 25, stiffness: 350 }}
-            className="fixed right-6 bottom-38 w-[370px] max-w-[calc(100vw-2rem)] h-[520px] max-h-[calc(100vh-8rem)] rounded-2xl border border-gold/20 flex flex-col overflow-hidden z-50 shadow-2xl glass"
+            initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 16 }}
+            animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1, y: 0 }}
+            exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.96, y: 16 }}
+            transition={
+              reduceMotion ? { duration: 0.15 } : { type: "spring", damping: 25, stiffness: 350 }
+            }
+            className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+9.5rem)] left-4 h-[520px] max-h-[calc(100vh-8rem)] rounded-2xl border border-gold/20 flex flex-col overflow-hidden z-50 shadow-2xl glass sm:left-auto sm:right-6 sm:w-[370px] sm:max-w-[calc(100vw-3rem)]"
             role="dialog"
             aria-label="Pravin Elite Chatbot"
           >
@@ -429,11 +406,31 @@ export function FitnessChatbot() {
                   </h3>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className="relative flex h-2 w-2">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                      <span
+                        className={`absolute inline-flex h-full w-full rounded-full opacity-75 ${
+                          assistantMode === "online"
+                            ? "animate-ping bg-emerald-400"
+                            : assistantMode === "checking"
+                              ? "animate-pulse bg-amber-400"
+                              : "bg-slate-400"
+                        }`}
+                      ></span>
+                      <span
+                        className={`relative inline-flex rounded-full h-2 w-2 ${
+                          assistantMode === "online"
+                            ? "bg-emerald-500"
+                            : assistantMode === "checking"
+                              ? "bg-amber-500"
+                              : "bg-slate-400"
+                        }`}
+                      ></span>
                     </span>
                     <span className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">
-                      {isOnline ? "Gemini AI Active" : "Local Assistant"}
+                      {assistantMode === "online"
+                        ? "Gemini AI Active"
+                        : assistantMode === "checking"
+                          ? "Checking AI Backend"
+                          : "Local Expert Mode"}
                     </span>
                   </div>
                 </div>
@@ -462,7 +459,7 @@ export function FitnessChatbot() {
                         : "bg-secondary/40 text-foreground border border-border/40 rounded-tl-none"
                     }`}
                   >
-                    <MessageText text={msg.text} onLinkClick={() => setIsOpen(false)} />
+                    <MessageText text={msg.text} onLinkClick={() => onOpenChange(false)} />
                     <span
                       className={`block text-[9px] mt-1 text-right ${
                         msg.sender === "user" ? "text-background/70" : "text-muted-foreground"

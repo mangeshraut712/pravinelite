@@ -1,6 +1,10 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ArrowUp } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+
+interface BackToTopProps {
+  hidden?: boolean;
+}
 
 const scrollToTop = () => {
   window.scrollTo({
@@ -9,8 +13,9 @@ const scrollToTop = () => {
   });
 };
 
-export function BackToTop() {
+export function BackToTop({ hidden = false }: BackToTopProps) {
   const [visible, setVisible] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   useEffect(() => {
     const toggleVisible = () => {
@@ -27,15 +32,16 @@ export function BackToTop() {
 
   return (
     <AnimatePresence>
-      {visible && (
+      {visible && !hidden && (
         <motion.button
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.8 }}
+          initial={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.92 }}
+          animate={reduceMotion ? { opacity: 1 } : { opacity: 1, scale: 1 }}
+          exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.92 }}
+          transition={reduceMotion ? { duration: 0.15 } : undefined}
           onClick={scrollToTop}
           type="button"
           aria-label="Back to top"
-          className="fixed bottom-42 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-gold text-background shadow-gold transition-transform hover:scale-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+          className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+10.5rem)] z-40 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-gold text-background shadow-gold transition-transform hover:scale-110 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold sm:right-6"
         >
           <ArrowUp className="h-5 w-5 stroke-[2.5px]" />
         </motion.button>

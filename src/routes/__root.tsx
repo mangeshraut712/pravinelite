@@ -7,6 +7,7 @@ import {
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
+import { useState } from "react";
 
 import appCss from "../styles.css?url";
 import { BackToTop } from "@/components/BackToTop";
@@ -219,13 +220,14 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const [chatOpen, setChatOpen] = useState(false);
 
   return (
     <QueryClientProvider client={queryClient}>
       <Outlet />
-      <BackToTop />
-      <WhatsAppFab />
-      <FitnessChatbot />
+      <BackToTop hidden={chatOpen} />
+      <WhatsAppFab hidden={chatOpen} />
+      <FitnessChatbot isOpen={chatOpen} onOpenChange={setChatOpen} />
     </QueryClientProvider>
   );
 }
