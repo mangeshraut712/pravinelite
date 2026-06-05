@@ -25,20 +25,26 @@ Pravin's location: Pune, India (in-person, at-home, and online).
 Hours: Mon-Sat, 6:00 AM to 9:00 PM IST.
 Output standard Markdown formatting. Do not output HTML tags. If referring to internal pages, use Markdown links (e.g., [Booking Page](/booking), [Calculator](/calculator), [Contact](/contact)).`;
 
-function getGeminiApiKey() {
-  return process.env.GEMINI_API_KEY || process.env.VITE_GEMINI_API_KEY;
+function getServerGeminiApiKey() {
+  return process.env.GEMINI_API_KEY;
+}
+
+function hasClientCompatibilityKey() {
+  return Boolean(process.env.VITE_GEMINI_API_KEY);
 }
 
 export const Route = createFileRoute("/api/chat")({
   server: {
     handlers: {
       GET: async () => {
-        const online = Boolean(getGeminiApiKey());
+        const serverKey = getServerGeminiApiKey();
+        const transport = serverKey ? "server" : hasClientCompatibilityKey() ? "client" : "offline";
 
         return Response.json(
           {
-            online,
-            model: online ? GEMINI_MODEL : null,
+            online: transport !== "offline",
+            transport,
+            model: transport !== "offline" ? GEMINI_MODEL : null,
           },
           {
             headers: {
@@ -48,7 +54,7 @@ export const Route = createFileRoute("/api/chat")({
         );
       },
       POST: async ({ request }) => {
-        const apiKey = getGeminiApiKey();
+        const apiKey = getServerGeminiApiKey();
         if (!apiKey) {
           return Response.json(
             {

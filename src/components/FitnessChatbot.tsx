@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { MessageSquareText, Send, X, Dumbbell, Sparkles, Loader2, Compass } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
 
 // Types for chat messages
 interface Message {
@@ -13,6 +14,7 @@ interface Message {
 }
 
 type AssistantMode = "checking" | "online" | "offline";
+type ChatTransport = "checking" | "server" | "client" | "offline";
 
 // Predefined local NLP response structure
 interface LocalResponse {
@@ -116,6 +118,81 @@ const parseLocalReply = (query: string): string => {
   return DEFAULT_FALLBACK;
 };
 
+const buildRecentHistory = (history: Message[]) =>
+  history
+    .filter((message) => message.id !== "welcome")
+    .slice(-10)
+    .map(({ sender, text }) => ({
+      sender,
+      text,
+    }));
+
+const fetchGeminiDirect = async (userMsg: string, history: Message[]): Promise<string> => {
+  const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+  if (!apiKey) {
+    throw new Error("Gemini browser key is not configured.");
+  }
+
+  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  const contents = buildRecentHistory(history).map((message) => ({
+    role: message.sender === "user" ? "user" : "model",
+    parts: [{ text: message.text }],
+  }));
+
+  contents.push({
+    role: "user",
+    parts: [{ text: userMsg }],
+  });
+
+  const response = await fetch(endpoint, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      contents,
+      systemInstruction: {
+        parts: [
+          {
+            text: `You are the Virtual AI Fitness Coach for "Pravin Elite Fitness" (founded by Pravin, a premium certified personal trainer in Pune, India, with over 5 years of experience and 1500+ successful body transformations).
+Keep your answers brief, engaging, encouraging, and highly professional. Limit responses to 2-3 short paragraphs at most. Avoid verbose listicle spam.
+Answer questions about weight loss, muscle gain, custom Indian diets (including vegetarian, paneer/tofu protein plans, non-vegetarian chicken/egg splits, and Jain portion control/timing), PCOS/PCOD coaching, and functional training.
+Reference Pravin's pricing plans:
+- 45-Day Intense Shred (for fast fat loss)
+- 90-Day Elite Transformation (muscle build and body recomposition)
+- Monthly Premium Online/Hybrid Coaching
+Encourage users to book a free 15-minute consultation via the Booking Page (/booking), contact page (/contact), or text on WhatsApp (https://wa.me/919272432562).
+Pravin's location: Pune, India (in-person, at-home, and online).
+Hours: Mon-Sat, 6:00 AM to 9:00 PM IST.
+Output standard Markdown formatting. Do not output HTML tags. If referring to internal pages, use Markdown links (e.g., [Booking Page](/booking), [Calculator](/calculator), [Contact](/contact)).`,
+          },
+        ],
+      },
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Gemini browser transport error: ${response.status}`);
+  }
+
+  const data = (await response.json()) as {
+    candidates?: Array<{
+      content?: {
+        parts?: Array<{
+          text?: string;
+        }>;
+      };
+    }>;
+  };
+
+  const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!replyText) {
+    throw new Error("No response text found in Gemini output.");
+  }
+
+  return replyText;
+};
+
 const fetchServerReply = async (userMsg: string, history: Message[]): Promise<string> => {
   const response = await fetch("/api/chat", {
     method: "POST",
@@ -124,10 +201,7 @@ const fetchServerReply = async (userMsg: string, history: Message[]): Promise<st
     },
     body: JSON.stringify({
       userMessage: userMsg,
-      history: history
-        .filter((message) => message.id !== "welcome")
-        .slice(-10)
-        .map(({ sender, text }) => ({ sender, text })),
+      history: buildRecentHistory(history),
     }),
   });
 
@@ -257,10 +331,46 @@ export function FitnessChatbot({ isOpen, onOpenChange }: FitnessChatbotProps) {
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [hasNewBadge, setHasNewBadge] = useState(false);
-  const [assistantMode, setAssistantMode] = useState<AssistantMode>("checking");
+  const [assistantModeOverride, setAssistantModeOverride] = useState<AssistantMode | null>(null);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
+
+  const chatHealthQuery = useQuery({
+    queryKey: ["chat-health"],
+    queryFn: async () => {
+      const response = await fetch("/api/chat", {
+        method: "GET",
+        cache: "no-store",
+      });
+
+      if (!response.ok) {
+        throw new Error(`Health check failed: ${response.status}`);
+      }
+
+      return (await response.json()) as { online?: boolean; transport?: ChatTransport };
+    },
+    staleTime: Infinity,
+    gcTime: Infinity,
+    retry: 0,
+    refetchOnWindowFocus: false,
+  });
+
+  const resolvedTransport: ChatTransport =
+    chatHealthQuery.data?.transport ??
+    (import.meta.env.VITE_GEMINI_API_KEY
+      ? "client"
+      : chatHealthQuery.isPending
+        ? "checking"
+        : "offline");
+
+  const assistantMode: AssistantMode =
+    assistantModeOverride ??
+    (resolvedTransport === "checking"
+      ? "checking"
+      : resolvedTransport === "offline"
+        ? "offline"
+        : "online");
 
   useEffect(() => {
     // Pulse notification badge after 6 seconds if unopened
@@ -276,29 +386,6 @@ export function FitnessChatbot({ isOpen, onOpenChange }: FitnessChatbotProps) {
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, isLoading]);
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    fetch("/api/chat", {
-      method: "GET",
-      cache: "no-store",
-      signal: controller.signal,
-    })
-      .then(async (response) => {
-        if (!response.ok) {
-          throw new Error(`Health check failed: ${response.status}`);
-        }
-
-        const data = (await response.json()) as { online?: boolean };
-        setAssistantMode(data.online ? "online" : "offline");
-      })
-      .catch(() => {
-        setAssistantMode("offline");
-      });
-
-    return () => controller.abort();
-  }, []);
 
   const handleOpenToggle = () => {
     onOpenChange(!isOpen);
@@ -322,8 +409,15 @@ export function FitnessChatbot({ isOpen, onOpenChange }: FitnessChatbotProps) {
     setIsLoading(true);
 
     try {
-      const reply = await fetchServerReply(textToSend, messages);
-      setAssistantMode("online");
+      const reply =
+        resolvedTransport === "server"
+          ? await fetchServerReply(textToSend, messages)
+          : resolvedTransport === "client"
+            ? await fetchGeminiDirect(textToSend, messages)
+            : (() => {
+                throw new Error("Chat API unavailable");
+              })();
+      setAssistantModeOverride("online");
       setMessages((prev) => [
         ...prev,
         {
@@ -334,8 +428,8 @@ export function FitnessChatbot({ isOpen, onOpenChange }: FitnessChatbotProps) {
         },
       ]);
     } catch (error) {
-      console.warn("Chat API unavailable, running local NLP fallback", error);
-      setAssistantMode("offline");
+      console.warn("Chat transport unavailable, running local NLP fallback", error);
+      setAssistantModeOverride("offline");
       const localReply = parseLocalReply(textToSend);
       setMessages((prev) => [
         ...prev,
