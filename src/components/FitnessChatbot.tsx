@@ -133,7 +133,8 @@ const fetchGeminiDirect = async (userMsg: string, history: Message[]): Promise<s
     throw new Error("Gemini browser key is not configured.");
   }
 
-  const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`;
+  const endpoint =
+    "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent";
   const contents = buildRecentHistory(history).map((message) => ({
     role: message.sender === "user" ? "user" : "model",
     parts: [{ text: message.text }],
@@ -148,6 +149,7 @@ const fetchGeminiDirect = async (userMsg: string, history: Message[]): Promise<s
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      "x-goog-api-key": apiKey,
     },
     body: JSON.stringify({
       contents,
@@ -370,7 +372,9 @@ export function FitnessChatbot({ isOpen, onOpenChange }: FitnessChatbotProps) {
       ? "checking"
       : resolvedTransport === "offline"
         ? "offline"
-        : "online");
+        : resolvedTransport === "client"
+          ? "checking"
+          : "online");
 
   useEffect(() => {
     // Pulse notification badge after 6 seconds if unopened
@@ -523,7 +527,9 @@ export function FitnessChatbot({ isOpen, onOpenChange }: FitnessChatbotProps) {
                       {assistantMode === "online"
                         ? "Gemini AI Active"
                         : assistantMode === "checking"
-                          ? "Checking AI Backend"
+                          ? resolvedTransport === "client"
+                            ? "Browser AI Standby"
+                            : "Checking AI Backend"
                           : "Local Expert Mode"}
                     </span>
                   </div>
