@@ -179,7 +179,7 @@ ${parsed.data.notes ? `Message: ${parsed.data.notes}` : ""}`;
                     window.open(
                       `https://wa.me/919272432562?text=${encodeURIComponent(msg)}`,
                       "_blank",
-                      "noopener,noreferrer"
+                      "noopener,noreferrer",
                     );
                   }}
                   className="space-y-4"

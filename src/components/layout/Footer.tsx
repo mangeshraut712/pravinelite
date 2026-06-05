@@ -25,8 +25,8 @@ export function Footer() {
               />
             </div>
             <p className="text-sm text-muted-foreground leading-relaxed max-w-xs">
-              Pune's premier personal training studio. Real food, real training, real results
-              since 2020.
+              Pune's premier personal training studio. Real food, real training, real results since
+              2020.
             </p>
             {/* Social */}
             <div className="mt-6 flex gap-3">

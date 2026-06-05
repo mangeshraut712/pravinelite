@@ -12,7 +12,12 @@ import { z } from "zod";
 import calculatorHero from "@/assets/calculator-hero.jpg";
 import { cn } from "@/lib/utils";
 import { PieChart, Pie } from "recharts";
-import { ChartContainer, ChartTooltip, ChartTooltipContent, type ChartConfig } from "@/components/ui/chart";
+import {
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+  type ChartConfig,
+} from "@/components/ui/chart";
 
 export const Route = createFileRoute("/calculator")({
   head: () => ({
@@ -429,18 +434,36 @@ function CalculatorPage() {
                     />
                     <Stat label="Protein" value={`${result.macros.protein}`} unit="g" />
                     <Stat label="Carbs" value={`${result.macros.carbs}`} unit="g" />
-                    <Stat label="Fats" value={`${result.macros.fats}`} unit="g" className="col-span-2" />
+                    <Stat
+                      label="Fats"
+                      value={`${result.macros.fats}`}
+                      unit="g"
+                      className="col-span-2"
+                    />
                   </div>
-                  
+
                   <div className="flex flex-col items-center justify-center p-6 rounded-3xl border border-border bg-card/40">
-                    <div className="font-semibold text-xs mb-4 uppercase tracking-wider text-muted-foreground">Calorie Distribution</div>
-                    <ChartContainer config={chartConfig} className="w-full max-w-[180px] aspect-square">
+                    <div className="font-semibold text-xs mb-4 uppercase tracking-wider text-muted-foreground">
+                      Calorie Distribution
+                    </div>
+                    <ChartContainer
+                      config={chartConfig}
+                      className="w-full max-w-[180px] aspect-square"
+                    >
                       <PieChart>
                         <ChartTooltip cursor={false} content={<ChartTooltipContent hideLabel />} />
                         <Pie
                           data={[
-                            { name: "protein", value: result.macros.protein * 4, fill: "var(--color-gold)" },
-                            { name: "carbs", value: result.macros.carbs * 4, fill: "var(--color-fire)" },
+                            {
+                              name: "protein",
+                              value: result.macros.protein * 4,
+                              fill: "var(--color-gold)",
+                            },
+                            {
+                              name: "carbs",
+                              value: result.macros.carbs * 4,
+                              fill: "var(--color-fire)",
+                            },
                             { name: "fats", value: result.macros.fats * 9, fill: "#3b82f6" },
                           ]}
                           dataKey="value"
@@ -453,9 +476,18 @@ function CalculatorPage() {
                       </PieChart>
                     </ChartContainer>
                     <div className="mt-4 flex flex-wrap justify-center gap-x-4 gap-y-1 text-xs">
-                      <div className="flex items-center gap-1.5"><div className="h-2.5 w-2.5 rounded-full bg-gold" /> Protein ({Math.round(result.macros.protein * 400 / result.macros.calories)}%)</div>
-                      <div className="flex items-center gap-1.5"><div className="h-2.5 w-2.5 rounded-full bg-fire" /> Carbs ({Math.round(result.macros.carbs * 400 / result.macros.calories)}%)</div>
-                      <div className="flex items-center gap-1.5"><div className="h-2.5 w-2.5 rounded-full bg-blue-500" /> Fats ({Math.round(result.macros.fats * 900 / result.macros.calories)}%)</div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="h-2.5 w-2.5 rounded-full bg-gold" /> Protein (
+                        {Math.round((result.macros.protein * 400) / result.macros.calories)}%)
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="h-2.5 w-2.5 rounded-full bg-fire" /> Carbs (
+                        {Math.round((result.macros.carbs * 400) / result.macros.calories)}%)
+                      </div>
+                      <div className="flex items-center gap-1.5">
+                        <div className="h-2.5 w-2.5 rounded-full bg-blue-500" /> Fats (
+                        {Math.round((result.macros.fats * 900) / result.macros.calories)}%)
+                      </div>
                     </div>
                   </div>
                 </div>

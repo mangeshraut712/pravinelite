@@ -10,12 +10,14 @@ A cutting-edge, high-performance fitness website built with 2026 web technologie
 ## 🚀 2026 Tech Stack
 
 ### Core Framework
+
 - **React 19** - Latest React with new Server Components, Actions, and use() API
 - **TanStack Start** - Full-stack React framework with built-in SSR, streaming, and file-based routing
 - **TypeScript 5.6** - Type-safe development with enhanced type inference
 - **Vite 7** - Lightning-fast build tool with native ESM support
 
 ### Styling & UI
+
 - **Tailwind CSS v4** - Next-gen utility-first CSS with native CSS nesting, container queries, and custom properties
 - **shadcn/ui** - Modern, accessible component library built on Radix UI
 - **Lucide React** - Beautiful, consistent icon library
@@ -30,19 +32,23 @@ A cutting-edge, high-performance fitness website built with 2026 web technologie
   - CSS Container Queries
 
 ### State & Data
+
 - **TanStack Query v5** - Powerful data fetching with automatic caching, refetching, and background updates
 - **React Hook Form** - Performant form handling with minimal re-renders
 - **Zod** - TypeScript-first schema validation
 
 ### Animations
+
 - **Framer Motion** - Production-ready motion library with LazyMotion for code-splitting
 - **TanStack Router** - Built-in scroll restoration and preloading
 
 ### Backend & Database
+
 - **Supabase** - Open-source Firebase alternative with PostgreSQL, Auth, and Realtime
 - **Cloudflare Workers** - Edge deployment with global CDN
 
 ### Development Tools
+
 - **ESLint 9** - Modern linting with flat config
 - **Prettier** - Code formatting
 - **TypeScript** - Strict type checking
@@ -50,6 +56,7 @@ A cutting-edge, high-performance fitness website built with 2026 web technologie
 ## ✨ Key Features
 
 ### Performance
+
 - **Edge Deployment** - Deployed on Vercel Edge for global low-latency access
 - **Code Splitting** - Automatic route-based code splitting with TanStack Start
 - **Image Optimization** - Responsive images with lazy loading
@@ -58,6 +65,7 @@ A cutting-edge, high-performance fitness website built with 2026 web technologie
 - **LazyMotion** - Animation library code-splitting for reduced bundle size
 
 ### Accessibility (WCAG 2.1 AA)
+
 - **ARIA Labels** - Comprehensive ARIA attributes on all interactive elements
 - **Keyboard Navigation** - Full keyboard support with visible focus states
 - **Reduced Motion** - Respects `prefers-reduced-motion` media query
@@ -66,6 +74,7 @@ A cutting-edge, high-performance fitness website built with 2026 web technologie
 - **Screen Reader Support** - Screen reader-friendly content structure
 
 ### SEO & Discoverability
+
 - **Meta Tags** - Comprehensive meta tags for search engines
 - **Open Graph** - Rich social media previews
 - **Twitter Cards** - Optimized Twitter sharing
@@ -74,6 +83,7 @@ A cutting-edge, high-performance fitness website built with 2026 web technologie
 - **Robots.txt** - Search engine crawling directives
 
 ### User Experience
+
 - **View Transitions** - Smooth cross-page navigation animations
 - **Scroll-Driven Animations** - Elements reveal on scroll without JavaScript
 - **Form Auto-Sizing** - Textareas auto-expand with `field-sizing: content`
@@ -208,18 +218,21 @@ src/
 ## 🎨 Design System
 
 ### Colors
+
 - **Background**: Dark theme with oklch color space
 - **Gold**: Primary accent (oklch(0.78 0.14 80))
 - **Fire**: Secondary accent (oklch(0.68 0.18 45))
 - **Gradients**: Hero, Gold, Fire, Card gradients
 
 ### Typography
+
 - **Display**: Bebas Neue (headings)
 - **Sans**: DM Sans (body text)
 - **Serif**: Playfair Display (accents)
 - **Mono**: JetBrains Mono (code)
 
 ### Components
+
 - **Glass Effect**: Backdrop blur with subtle border
 - **Grain Texture**: SVG noise overlay
 - **Shadows**: Gold glow and card elevation
@@ -241,6 +254,7 @@ vercel --prod
 ```
 
 The project is configured with:
+
 - Automatic builds on git push
 - Edge deployment
 - Environment variables from `.env`
@@ -268,6 +282,7 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
 ### Vercel Configuration
 
 See `vercel.json` for build settings:
+
 - Build command: `npm run build`
 - Output directory: `dist/client`
 - Framework: None (TanStack Start custom)

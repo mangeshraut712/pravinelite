@@ -22,36 +22,79 @@ interface LocalResponse {
 const LOCAL_RESPONSES: LocalResponse[] = [
   {
     keywords: ["pcos", "pcod", "hormon", "irregular", "cyst", "period"],
-    response: "🌸 **PCOS/PCOD Transformation Program**\n\nTrainer Pravin specializes in managing PCOS through tailored resistance training, stress reduction, and insulin-sensitivity diet splits (carb-cycling, fiber-rich Indian recipes).\n\nWe don't do crash diets! Our program focuses on sustainable lifestyle changes that restore hormonal balance.\n\n👉 [Book a Free Consultation](/booking) to discuss a custom PCOS program!"
+    response:
+      "🌸 **PCOS/PCOD Transformation Program**\n\nTrainer Pravin specializes in managing PCOS through tailored resistance training, stress reduction, and insulin-sensitivity diet splits (carb-cycling, fiber-rich Indian recipes).\n\nWe don't do crash diets! Our program focuses on sustainable lifestyle changes that restore hormonal balance.\n\n👉 [Book a Free Consultation](/booking) to discuss a custom PCOS program!",
   },
   {
-    keywords: ["diet", "nutrition", "recipe", "veg", "non-veg", "jain", "protein", "meal", "eat", "food", "calorie", "macro"],
-    response: "🥗 **Custom Indian Diet Plans**\n\nWe provide detailed macro-calculated nutrition plans using everyday Indian foods (no fancy, expensive ingredients needed):\n• **Vegetarian:** Paneer, lentils, tofu, and curd protein plans\n• **Non-vegetarian:** Chicken, egg, and fish protein splits\n• **Jain Coaching:** Customized portion controls and timing protocols\n\nCheck out your personal macro breakdown using our free [BMI & Macro Calculator](/calculator) or get a custom plan from Pravin!"
+    keywords: [
+      "diet",
+      "nutrition",
+      "recipe",
+      "veg",
+      "non-veg",
+      "jain",
+      "protein",
+      "meal",
+      "eat",
+      "food",
+      "calorie",
+      "macro",
+    ],
+    response:
+      "🥗 **Custom Indian Diet Plans**\n\nWe provide detailed macro-calculated nutrition plans using everyday Indian foods (no fancy, expensive ingredients needed):\n• **Vegetarian:** Paneer, lentils, tofu, and curd protein plans\n• **Non-vegetarian:** Chicken, egg, and fish protein splits\n• **Jain Coaching:** Customized portion controls and timing protocols\n\nCheck out your personal macro breakdown using our free [BMI & Macro Calculator](/calculator) or get a custom plan from Pravin!",
   },
   {
-    keywords: ["price", "pricing", "cost", "package", "fee", "charge", "subscription", "pay", "money", "rupee", "inr"],
-    response: "💰 **Coaching Programs & Packages**\n\nWe offer premium result-oriented coaching programs:\n1. **45-Day Intense Shred:** Accelerated fat-loss coaching (daily check-ins).\n2. **90-Day Elite Transformation:** Muscle building, body recomposition, and diet habits.\n3. **Online Premium Coaching:** Custom diets, custom workout splits, and weekly progress calls.\n\nFor exact quotes and slot openings, please message Pravin on [WhatsApp Support](https://wa.me/919272432562) or [Schedule a Free Call](/booking)."
+    keywords: [
+      "price",
+      "pricing",
+      "cost",
+      "package",
+      "fee",
+      "charge",
+      "subscription",
+      "pay",
+      "money",
+      "rupee",
+      "inr",
+    ],
+    response:
+      "💰 **Coaching Programs & Packages**\n\nWe offer premium result-oriented coaching programs:\n1. **45-Day Intense Shred:** Accelerated fat-loss coaching (daily check-ins).\n2. **90-Day Elite Transformation:** Muscle building, body recomposition, and diet habits.\n3. **Online Premium Coaching:** Custom diets, custom workout splits, and weekly progress calls.\n\nFor exact quotes and slot openings, please message Pravin on [WhatsApp Support](https://wa.me/919272432562) or [Schedule a Free Call](/booking).",
   },
   {
     keywords: ["address", "location", "where", "gym", "center", "pune", "place", "studio"],
-    response: "📍 **Training Locations & Formats**\n\nPravin conducts training across three formats:\n1. **In-Gym Personal Training:** Select premium gyms in Pune, India.\n2. **At-Home Coaching:** Personal training at your apartment gym in Pune.\n3. **Online Global Coaching:** Personalized training & diets managed via custom tracker (available worldwide).\n\n[Contact Us](/contact) to find out if you are within our home training service radius in Pune!"
+    response:
+      "📍 **Training Locations & Formats**\n\nPravin conducts training across three formats:\n1. **In-Gym Personal Training:** Select premium gyms in Pune, India.\n2. **At-Home Coaching:** Personal training at your apartment gym in Pune.\n3. **Online Global Coaching:** Personalized training & diets managed via custom tracker (available worldwide).\n\n[Contact Us](/contact) to find out if you are within our home training service radius in Pune!",
   },
   {
     keywords: ["timing", "hour", "time", "open", "schedule", "day", "sunday", "saturday"],
-    response: "⏰ **Operating & Coaching Hours**\n\nWe schedule training sessions during the following hours:\n• **Monday to Saturday:** 6:00 AM – 9:00 PM IST\n• **Sunday:** Closed (Rest & Recovery for both trainer & clients)\n\nSessions are conducted in hourly blocks. You can view available diagnostic slots on our [Booking Calendar](/booking)."
+    response:
+      "⏰ **Operating & Coaching Hours**\n\nWe schedule training sessions during the following hours:\n• **Monday to Saturday:** 6:00 AM – 9:00 PM IST\n• **Sunday:** Closed (Rest & Recovery for both trainer & clients)\n\nSessions are conducted in hourly blocks. You can view available diagnostic slots on our [Booking Calendar](/booking).",
   },
   {
-    keywords: ["book", "booking", "consult", "appointment", "contact", "phone", "call", "free", "trial"],
-    response: "📅 **Book your Free Diagnostic Call**\n\nReady to transform? You can easily:\n1. Schedule a free 15-minute diagnostic call online: [Go to Booking](/booking)\n2. Send a WhatsApp message directly: [WhatsApp Chat](https://wa.me/919272432562)\n3. Submit our [Contact Form](/contact) and we'll call you back!"
+    keywords: [
+      "book",
+      "booking",
+      "consult",
+      "appointment",
+      "contact",
+      "phone",
+      "call",
+      "free",
+      "trial",
+    ],
+    response:
+      "📅 **Book your Free Diagnostic Call**\n\nReady to transform? You can easily:\n1. Schedule a free 15-minute diagnostic call online: [Go to Booking](/booking)\n2. Send a WhatsApp message directly: [WhatsApp Chat](https://wa.me/919272432562)\n3. Submit our [Contact Form](/contact) and we'll call you back!",
   },
   {
     keywords: ["hi", "hello", "hey", "start", "welcome", "about", "who"],
-    response: "👋 **Welcome to Pravin Elite Fitness Assistant!**\n\nI am your virtual AI coach. You can ask me anything about:\n• PCOS/PCOD custom workouts\n• Indian diet templates (Veg/Non-veg/Jain)\n• Coaching programs, locations, and pricing\n• Gym operating hours\n\nFeel free to type your question below or click one of the quick replies!"
-  }
+    response:
+      "👋 **Welcome to Pravin Elite Fitness Assistant!**\n\nI am your virtual AI coach. You can ask me anything about:\n• PCOS/PCOD custom workouts\n• Indian diet templates (Veg/Non-veg/Jain)\n• Coaching programs, locations, and pricing\n• Gym operating hours\n\nFeel free to type your question below or click one of the quick replies!",
+  },
 ];
 
 // Fallback message when keyword matching finds nothing
-const DEFAULT_FALLBACK = "🤖 **Pravin Elite Virtual Assistant**\n\nI couldn't quite find a direct match for that. No worries! Here is what you can do:\n• Check out our coaching programs: [Services & Programs](/services)\n• Calculate your daily calorie macros: [BMI & Macro Calculator](/calculator)\n• Book a free diagnostic call: [Booking Page](/booking)\n• Speak to Pravin directly: [WhatsApp Chat](https://wa.me/919272432562)";
+const DEFAULT_FALLBACK =
+  "🤖 **Pravin Elite Virtual Assistant**\n\nI couldn't quite find a direct match for that. No worries! Here is what you can do:\n• Check out our coaching programs: [Services & Programs](/services)\n• Calculate your daily calorie macros: [BMI & Macro Calculator](/calculator)\n• Book a free diagnostic call: [Booking Page](/booking)\n• Speak to Pravin directly: [WhatsApp Chat](https://wa.me/919272432562)";
 
 export function FitnessChatbot() {
   const [isOpen, setIsOpen] = useState(false);
@@ -60,8 +103,8 @@ export function FitnessChatbot() {
       id: "welcome",
       sender: "bot",
       text: "👋 Hi! I'm your Pravin Elite AI Coach. Ready to transform your body? Let me know what you're looking for! Ask me about PCOS programs, Indian diets, pricing, or booking details.",
-      timestamp: new Date()
-    }
+      timestamp: new Date(),
+    },
   ]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -74,7 +117,7 @@ export function FitnessChatbot() {
   // Check connectivity and verify key presence on load
   useEffect(() => {
     setIsOnline(hasApiKey);
-    
+
     // Pulse notification badge after 6 seconds if unopened
     const timer = setTimeout(() => {
       if (!isOpen) {
@@ -100,7 +143,7 @@ export function FitnessChatbot() {
   const parseLocalReply = (query: string): string => {
     const cleanQuery = query.toLowerCase().trim();
     for (const item of LOCAL_RESPONSES) {
-      if (item.keywords.some(kw => cleanQuery.includes(kw))) {
+      if (item.keywords.some((kw) => cleanQuery.includes(kw))) {
         return item.response;
       }
     }
@@ -119,16 +162,16 @@ export function FitnessChatbot() {
     // Convert message history to Gemini format (roles: 'user' and 'model')
     // Exclude welcome message to avoid bloat, slice last 10 messages for context
     const recentHistory = history
-      .filter(m => m.id !== "welcome")
+      .filter((m) => m.id !== "welcome")
       .slice(-10)
-      .map(m => ({
+      .map((m) => ({
         role: m.sender === "user" ? "user" : "model",
-        parts: [{ text: m.text }]
+        parts: [{ text: m.text }],
       }));
 
     recentHistory.push({
       role: "user",
-      parts: [{ text: userMsg }]
+      parts: [{ text: userMsg }],
     });
 
     const systemInstruction = {
@@ -144,20 +187,20 @@ Reference Pravin's pricing plans:
 Encourage users to book a free 15-minute consultation via the Booking Page (/booking), contact page (/contact), or text on WhatsApp (https://wa.me/919272432562).
 Pravin's location: Pune, India (in-person, at-home, and online).
 Hours: Mon-Sat, 6:00 AM to 9:00 PM IST.
-Output standard Markdown formatting. Do not output HTML tags. If referring to internal pages, use Markdown links (e.g., [Booking Page](/booking), [Calculator](/calculator), [Contact](/contact)).`
-        }
-      ]
+Output standard Markdown formatting. Do not output HTML tags. If referring to internal pages, use Markdown links (e.g., [Booking Page](/booking), [Calculator](/calculator), [Contact](/contact)).`,
+        },
+      ],
     };
 
     const response = await fetch(endpoint, {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         contents: recentHistory,
-        systemInstruction: systemInstruction
-      })
+        systemInstruction: systemInstruction,
+      }),
     });
 
     if (!response.ok) {
@@ -180,51 +223,51 @@ Output standard Markdown formatting. Do not output HTML tags. If referring to in
       id: `user-${Date.now()}`,
       sender: "user",
       text: textToSend,
-      timestamp: new Date()
+      timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInputValue("");
     setIsLoading(true);
 
     try {
       if (hasApiKey) {
         const reply = await fetchGeminiReply(textToSend, messages);
-        setMessages(prev => [
+        setMessages((prev) => [
           ...prev,
           {
             id: `bot-${Date.now()}`,
             sender: "bot",
             text: reply,
-            timestamp: new Date()
-          }
+            timestamp: new Date(),
+          },
         ]);
       } else {
         // Run local parsing directly
         const localReply = parseLocalReply(textToSend);
-        setMessages(prev => [
+        setMessages((prev) => [
           ...prev,
           {
             id: `bot-${Date.now()}`,
             sender: "bot",
             text: localReply,
             timestamp: new Date(),
-            isFallback: true
-          }
+            isFallback: true,
+          },
         ]);
       }
     } catch (error) {
       console.warn("Gemini connection error, running local NLP fallback", error);
       const localReply = parseLocalReply(textToSend);
-      setMessages(prev => [
+      setMessages((prev) => [
         ...prev,
         {
           id: `bot-${Date.now()}`,
           sender: "bot",
           text: `⚠️ *Using local engine (connection error)*\n\n${localReply}`,
           timestamp: new Date(),
-          isFallback: true
-        }
+          isFallback: true,
+        },
       ]);
     } finally {
       setIsLoading(false);
@@ -234,14 +277,14 @@ Output standard Markdown formatting. Do not output HTML tags. If referring to in
   const renderMessageText = (text: string) => {
     // Basic Markdown parser for links: [text](href)
     const linkRegex = /\[([^\]]+)\]\(([^)]+)\)/g;
-    
+
     // Highlight bold text: **text**
     const boldRegex = /\*\*([^*]+)\*\*/g;
 
     let parsedText = text;
     const elements: React.ReactNode[] = [];
     let lastIndex = 0;
-    
+
     // We will parse formatting sequentially
     // Since this is client-side, we do a basic regex loop to extract links and text
     const matches: { index: number; length: number; element: React.ReactNode }[] = [];
@@ -252,22 +295,22 @@ Output standard Markdown formatting. Do not output HTML tags. If referring to in
     while ((linkMatch = linkRegex.exec(text)) !== null) {
       const [fullMatch, linkText, href] = linkMatch;
       const index = linkMatch.index;
-      
+
       const isExternal = href.startsWith("http");
       const element = isExternal ? (
-        <a 
-          key={`link-${index}`} 
-          href={href} 
-          target="_blank" 
-          rel="noopener noreferrer" 
+        <a
+          key={`link-${index}`}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
           className="text-gold font-medium hover:underline inline-flex items-center gap-0.5"
         >
           {linkText}
         </a>
       ) : (
-        <Link 
-          key={`link-${index}`} 
-          to={href} 
+        <Link
+          key={`link-${index}`}
+          to={href}
           className="text-gold font-semibold hover:underline inline-flex items-center gap-0.5"
           onClick={() => setIsOpen(false)} // Close chatbot window when routing internally
         >
@@ -282,7 +325,7 @@ Output standard Markdown formatting. Do not output HTML tags. If referring to in
     matches.sort((a, b) => a.index - b.index);
 
     // Build elements array
-    matches.forEach(match => {
+    matches.forEach((match) => {
       if (match.index > lastIndex) {
         const textSegment = text.substring(lastIndex, match.index);
         elements.push(...parseBoldText(textSegment));
@@ -295,7 +338,9 @@ Output standard Markdown formatting. Do not output HTML tags. If referring to in
       elements.push(...parseBoldText(text.substring(lastIndex)));
     }
 
-    return <div className="space-y-1.5 whitespace-pre-wrap">{elements.length > 0 ? elements : text}</div>;
+    return (
+      <div className="space-y-1.5 whitespace-pre-wrap">{elements.length > 0 ? elements : text}</div>
+    );
   };
 
   // Help format bold segments
@@ -304,19 +349,23 @@ Output standard Markdown formatting. Do not output HTML tags. If referring to in
     const parts: React.ReactNode[] = [];
     let lastIdx = 0;
     let match;
-    
+
     while ((match = boldRegex.exec(textSegment)) !== null) {
       if (match.index > lastIdx) {
         parts.push(textSegment.substring(lastIdx, match.index));
       }
-      parts.push(<strong key={`bold-${match.index}`} className="font-bold text-foreground">{match[1]}</strong>);
+      parts.push(
+        <strong key={`bold-${match.index}`} className="font-bold text-foreground">
+          {match[1]}
+        </strong>,
+      );
       lastIdx = boldRegex.lastIndex;
     }
-    
+
     if (lastIdx < textSegment.length) {
       parts.push(textSegment.substring(lastIdx));
     }
-    
+
     return parts;
   };
 
@@ -324,7 +373,7 @@ Output standard Markdown formatting. Do not output HTML tags. If referring to in
     { label: "🌸 PCOS Program", query: "tell me about your PCOS program" },
     { label: "🥗 Indian Diet Plan", query: "do you make customized Indian diets?" },
     { label: "💰 Coaching Pricing", query: "what are your coaching package prices?" },
-    { label: "📅 Book Consultation", query: "how do I book a free consultation?" }
+    { label: "📅 Book Consultation", query: "how do I book a free consultation?" },
   ];
 
   return (
@@ -347,7 +396,9 @@ Output standard Markdown formatting. Do not output HTML tags. If referring to in
           {hasNewBadge && !isOpen && (
             <span className="absolute -top-1 -right-1 flex size-4">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-500 opacity-75" />
-              <span className="relative inline-flex size-4 rounded-full bg-amber-600 border-2 border-background flex items-center justify-center text-[8px] text-white font-bold">1</span>
+              <span className="relative inline-flex size-4 rounded-full bg-amber-600 border-2 border-background flex items-center justify-center text-[8px] text-white font-bold">
+                1
+              </span>
             </span>
           )}
         </button>
@@ -372,7 +423,9 @@ Output standard Markdown formatting. Do not output HTML tags. If referring to in
                   <Dumbbell className="size-5 text-gold" />
                 </div>
                 <div>
-                  <h3 className="font-display text-lg tracking-wide text-gradient-gold">Pravin Elite Coach</h3>
+                  <h3 className="font-display text-lg tracking-wide text-gradient-gold">
+                    Pravin Elite Coach
+                  </h3>
                   <div className="flex items-center gap-1.5 mt-0.5">
                     <span className="relative flex h-2 w-2">
                       <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -396,7 +449,7 @@ Output standard Markdown formatting. Do not output HTML tags. If referring to in
 
             {/* Message Stream */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-gold/20 scrollbar-track-transparent">
-              {messages.map(msg => (
+              {messages.map((msg) => (
                 <div
                   key={msg.id}
                   className={`flex ${msg.sender === "user" ? "justify-end" : "justify-start"}`}
@@ -414,7 +467,7 @@ Output standard Markdown formatting. Do not output HTML tags. If referring to in
                         msg.sender === "user" ? "text-background/70" : "text-muted-foreground"
                       }`}
                     >
-                      {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                      {msg.timestamp.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
                     </span>
                   </div>
                 </div>
