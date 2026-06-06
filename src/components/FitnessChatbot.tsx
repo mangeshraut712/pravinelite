@@ -335,11 +335,13 @@ export function FitnessChatbot({ isOpen, onOpenChange }: FitnessChatbotProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [hasNewBadge, setHasNewBadge] = useState(false);
   const [assistantModeOverride, setAssistantModeOverride] = useState<AssistantMode | null>(null);
-  const [showLauncher, setShowLauncher] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
   const isMobile = useIsMobile();
+
+  const showLauncher = !isMobile || isOpen || isScrolled;
 
   const chatHealthQuery = useQuery({
     queryKey: ["chat-health"],
@@ -390,23 +392,19 @@ export function FitnessChatbot({ isOpen, onOpenChange }: FitnessChatbotProps) {
   }, [isOpen]);
 
   useEffect(() => {
-    const updateLauncher = () => {
-      if (!isMobile || isOpen) {
-        setShowLauncher(true);
-        return;
-      }
-      setShowLauncher(window.scrollY > 280);
+    const updateScroll = () => {
+      setIsScrolled(window.scrollY > 280);
     };
 
-    updateLauncher();
-    window.addEventListener("scroll", updateLauncher, { passive: true });
-    window.addEventListener("resize", updateLauncher);
+    updateScroll();
+    window.addEventListener("scroll", updateScroll, { passive: true });
+    window.addEventListener("resize", updateScroll);
 
     return () => {
-      window.removeEventListener("scroll", updateLauncher);
-      window.removeEventListener("resize", updateLauncher);
+      window.removeEventListener("scroll", updateScroll);
+      window.removeEventListener("resize", updateScroll);
     };
-  }, [isMobile, isOpen]);
+  }, []);
 
   // Scroll to bottom whenever messages change
   useEffect(() => {

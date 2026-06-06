@@ -10,26 +10,24 @@ export function WhatsAppFab({ hidden = false }: WhatsAppFabProps) {
   const popoverRef = useRef<HTMLDivElement>(null);
   const hasAutoPromptedRef = useRef(false);
   const isMobile = useIsMobile();
-  const [isVisible, setIsVisible] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  const isVisible = !isMobile || isScrolled;
 
   useEffect(() => {
-    const updateVisibility = () => {
-      if (!isMobile) {
-        setIsVisible(true);
-        return;
-      }
-      setIsVisible(window.scrollY > 280);
+    const updateScroll = () => {
+      setIsScrolled(window.scrollY > 280);
     };
 
-    updateVisibility();
-    window.addEventListener("scroll", updateVisibility, { passive: true });
-    window.addEventListener("resize", updateVisibility);
+    updateScroll();
+    window.addEventListener("scroll", updateScroll, { passive: true });
+    window.addEventListener("resize", updateScroll);
 
     return () => {
-      window.removeEventListener("scroll", updateVisibility);
-      window.removeEventListener("resize", updateVisibility);
+      window.removeEventListener("scroll", updateScroll);
+      window.removeEventListener("resize", updateScroll);
     };
-  }, [isMobile]);
+  }, []);
 
   useEffect(() => {
     const popover = popoverRef.current;
