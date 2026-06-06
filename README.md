@@ -3,7 +3,8 @@
 A production-ready fitness website for Pravin Elite Fitness, built with React 19, TanStack Start, Vercel SSR, and Supabase. It includes lead capture flows, an India-specific calculator, and a hybrid fitness chatbot that uses Gemini on the server when configured and falls back to a local expert mode when it is not.
 
 [![Live Site](https://img.shields.io/badge/Live-pravinelite--main.vercel.app-green?style=for-the-badge&logo=vercel)](https://pravinelite-main.vercel.app)
-[![License](https://img.shields.io/badge/License-Proprietary-red?style=for-the-badge)](LICENSE)
+[![Version](https://img.shields.io/badge/Version-2.0.0-gold?style=for-the-badge)](https://github.com/mangeshraut712/pravinelite/releases)
+[![Deployments](https://img.shields.io/badge/Deployments-Active-blue?style=for-the-badge&logo=vercel)](https://pravinelite-main.vercel.app)
 [![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)](https://react.dev)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
 
