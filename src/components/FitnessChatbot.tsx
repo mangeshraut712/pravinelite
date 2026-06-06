@@ -3,6 +3,7 @@ import { MessageSquareText, Send, X, Dumbbell, Sparkles, Loader2, Compass } from
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 // Types for chat messages
 interface Message {
@@ -334,9 +335,11 @@ export function FitnessChatbot({ isOpen, onOpenChange }: FitnessChatbotProps) {
   const [isLoading, setIsLoading] = useState(false);
   const [hasNewBadge, setHasNewBadge] = useState(false);
   const [assistantModeOverride, setAssistantModeOverride] = useState<AssistantMode | null>(null);
+  const [showLauncher, setShowLauncher] = useState(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const reduceMotion = useReducedMotion();
+  const isMobile = useIsMobile();
 
   const chatHealthQuery = useQuery({
     queryKey: ["chat-health"],
@@ -385,6 +388,25 @@ export function FitnessChatbot({ isOpen, onOpenChange }: FitnessChatbotProps) {
     }, 6000);
     return () => clearTimeout(timer);
   }, [isOpen]);
+
+  useEffect(() => {
+    const updateLauncher = () => {
+      if (!isMobile || isOpen) {
+        setShowLauncher(true);
+        return;
+      }
+      setShowLauncher(window.scrollY > 280);
+    };
+
+    updateLauncher();
+    window.addEventListener("scroll", updateLauncher, { passive: true });
+    window.addEventListener("resize", updateLauncher);
+
+    return () => {
+      window.removeEventListener("scroll", updateLauncher);
+      window.removeEventListener("resize", updateLauncher);
+    };
+  }, [isMobile, isOpen]);
 
   // Scroll to bottom whenever messages change
   useEffect(() => {
@@ -453,17 +475,21 @@ export function FitnessChatbot({ isOpen, onOpenChange }: FitnessChatbotProps) {
   return (
     <>
       {/* Floating Action Button */}
-      <div className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] z-50 sm:right-6">
+      <div
+        className={`fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+4.5rem)] z-50 transition-all duration-200 sm:right-6 sm:bottom-[calc(env(safe-area-inset-bottom)+5.5rem)] ${
+          showLauncher ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"
+        }`}
+      >
         <button
           onClick={handleOpenToggle}
           type="button"
           aria-label="Open Fitness Coach Chatbot"
-          className="relative flex size-14 items-center justify-center rounded-full bg-gradient-gold text-background shadow-gold transition-transform hover:scale-110 active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold"
+          className="relative flex size-12 items-center justify-center rounded-full bg-gradient-gold text-background shadow-gold transition-transform active:scale-95 cursor-pointer focus:outline-none focus:ring-2 focus:ring-gold sm:size-14 sm:hover:scale-110"
         >
           {isOpen ? (
-            <X className="size-6 stroke-[2.5px]" />
+            <X className="size-5 stroke-[2.5px] sm:size-6" />
           ) : (
-            <MessageSquareText className="size-7 stroke-[2.2px]" />
+            <MessageSquareText className="size-6 stroke-[2.2px] sm:size-7" />
           )}
 
           {/* Pulse badge */}
@@ -488,7 +514,7 @@ export function FitnessChatbot({ isOpen, onOpenChange }: FitnessChatbotProps) {
             transition={
               reduceMotion ? { duration: 0.15 } : { type: "spring", damping: 25, stiffness: 350 }
             }
-            className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+9.5rem)] left-4 h-[520px] max-h-[calc(100vh-8rem)] rounded-2xl border border-gold/20 flex flex-col overflow-hidden z-50 shadow-2xl glass sm:left-auto sm:right-6 sm:w-[370px] sm:max-w-[calc(100vw-3rem)]"
+            className="fixed right-4 bottom-[calc(env(safe-area-inset-bottom)+8.5rem)] left-4 h-[min(520px,calc(100vh-9rem))] rounded-2xl border border-gold/20 flex flex-col overflow-hidden z-50 shadow-2xl glass sm:left-auto sm:right-6 sm:bottom-[calc(env(safe-area-inset-bottom)+9.5rem)] sm:h-[520px] sm:max-h-[calc(100vh-8rem)] sm:w-[370px] sm:max-w-[calc(100vw-3rem)]"
             role="dialog"
             aria-label="Pravin Elite Chatbot"
           >

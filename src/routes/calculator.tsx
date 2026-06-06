@@ -33,7 +33,9 @@ export const Route = createFileRoute("/calculator")({
         property: "og:description",
         content: "Calculate your BMI & daily calories. Get a custom program in 30 seconds.",
       },
+      { property: "og:url", content: "/calculator" },
     ],
+    links: [{ rel: "canonical", href: "https://pravinelitefit.com/calculator" }],
   }),
   component: CalculatorPage,
 });

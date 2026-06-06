@@ -45,7 +45,7 @@ export const Route = createFileRoute("/")({
       },
       { property: "og:url", content: "/" },
     ],
-    links: [{ rel: "canonical", href: "/" }],
+    links: [{ rel: "canonical", href: "https://pravinelitefit.com/" }],
   }),
   component: Index,
 });
@@ -181,6 +181,8 @@ function Index() {
             className="h-full w-full object-cover opacity-40"
             width={1920}
             height={1280}
+            loading="eager"
+            fetchPriority="high"
           />
           <div className="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-transparent" />
           <div className="absolute inset-0 bg-gradient-to-t from-background to-transparent" />

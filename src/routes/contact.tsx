@@ -40,7 +40,7 @@ export const Route = createFileRoute("/contact")({
       },
       { property: "og:url", content: "/contact" },
     ],
-    links: [{ rel: "canonical", href: "/contact" }],
+    links: [{ rel: "canonical", href: "https://pravinelitefit.com/contact" }],
   }),
   component: ContactPage,
 });

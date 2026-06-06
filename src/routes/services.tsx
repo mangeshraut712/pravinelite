@@ -24,7 +24,7 @@ export const Route = createFileRoute("/services")({
       },
       { property: "og:url", content: "/services" },
     ],
-    links: [{ rel: "canonical", href: "/services" }],
+    links: [{ rel: "canonical", href: "https://pravinelitefit.com/services" }],
   }),
   component: ServicesPage,
 });

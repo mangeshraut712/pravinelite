@@ -25,7 +25,7 @@ export const Route = createFileRoute("/about")({
       },
       { property: "og:url", content: "/about" },
     ],
-    links: [{ rel: "canonical", href: "/about" }],
+    links: [{ rel: "canonical", href: "https://pravinelitefit.com/about" }],
   }),
   component: AboutPage,
 });

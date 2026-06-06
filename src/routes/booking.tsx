@@ -28,7 +28,9 @@ export const Route = createFileRoute("/booking")({
         property: "og:description",
         content: "Pick a slot. Get confirmed. Start your transformation.",
       },
+      { property: "og:url", content: "/booking" },
     ],
+    links: [{ rel: "canonical", href: "https://pravinelitefit.com/booking" }],
   }),
   component: BookingPage,
 });

@@ -55,3 +55,6 @@ bun.lock
 # Local scratch and report files
 scratch/
 security_best_practices_report.md
+desktop-report.json
+mobile-report.json
+*.report.html

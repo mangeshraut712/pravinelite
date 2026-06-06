@@ -62,7 +62,7 @@ export function Footer() {
 
           {/* Quick Links */}
           <div>
-            <h4 className="mb-4 font-display text-lg tracking-wider">Explore</h4>
+            <h3 className="mb-4 font-display text-lg tracking-wider">Explore</h3>
             <ul className="space-y-2.5 text-sm text-muted-foreground">
               {[
                 { to: "/services", label: "Services" },
@@ -86,7 +86,7 @@ export function Footer() {
 
           {/* Client Links */}
           <div>
-            <h4 className="mb-4 font-display text-lg tracking-wider">Start Here</h4>
+            <h3 className="mb-4 font-display text-lg tracking-wider">Start Here</h3>
             <ul className="space-y-2.5 text-sm text-muted-foreground">
               <li>
                 <Link
@@ -127,7 +127,7 @@ export function Footer() {
 
           {/* Contact + Newsletter */}
           <div>
-            <h4 className="mb-4 font-display text-lg tracking-wider">Contact</h4>
+            <h3 className="mb-4 font-display text-lg tracking-wider">Contact</h3>
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li className="flex items-start gap-2">
                 <MapPin className="mt-0.5 size-4 shrink-0 text-gold" />
@@ -149,9 +149,9 @@ export function Footer() {
 
             {/* Newsletter */}
             <div className="mt-6">
-              <h5 className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wider text-muted-foreground">
                 Get Free Tips
-              </h5>
+              </p>
               {subscribed ? (
                 <motion.p
                   initial={{ opacity: 0, y: 5 }}

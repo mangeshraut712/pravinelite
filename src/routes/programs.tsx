@@ -24,7 +24,7 @@ export const Route = createFileRoute("/programs")({
       },
       { property: "og:url", content: "/programs" },
     ],
-    links: [{ rel: "canonical", href: "/programs" }],
+    links: [{ rel: "canonical", href: "https://pravinelitefit.com/programs" }],
     scripts: [
       {
         type: "application/ld+json",

@@ -126,11 +126,19 @@ export function Navbar() {
       </div>
 
       {/* Mobile menu with slide-down animation */}
+      {open && (
+        <button
+          type="button"
+          aria-label="Close menu overlay"
+          onClick={() => setOpen(false)}
+          className="fixed inset-0 top-[88px] z-40 bg-background/70 backdrop-blur-sm lg:hidden"
+        />
+      )}
       <div
         ref={menuRef}
         id="mobile-menu"
         className={cn(
-          "lg:hidden overflow-hidden transition-all duration-300 ease-in-out",
+          "relative z-50 lg:hidden overflow-hidden transition-all duration-300 ease-in-out",
           open ? "max-h-[500px] opacity-100" : "max-h-0 opacity-0",
         )}
       >
