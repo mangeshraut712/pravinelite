@@ -1,6 +1,8 @@
 {
   "name": "pravinelite",
   "version": "2.0.0",
+  "description": "Pravin Elite Fitness — Pune personal training site with Indian diet macros, booking, and a hybrid fitness chatbot.",
+  "homepage": "https://pravinelitefit.com",
   "private": true,
   "sideEffects": false,
   "type": "module",

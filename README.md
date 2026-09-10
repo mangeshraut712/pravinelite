@@ -1,12 +1,37 @@
-# Pravin Elite Fitness
+<p align="center">
+  <img src="src/assets/logo.png" alt="Pravin Elite Fitness" width="96" height="96">
+</p>
+
+<h1 align="center">Pravin Elite Fitness</h1>
+
+<p align="center">
+  <strong>Personal training in Pune · Indian nutrition macros · Booking & hybrid chatbot</strong>
+</p>
 
 A production-ready fitness website for Pravin Elite Fitness, built with React 19, TanStack Start, Vercel SSR, and Supabase. It includes lead capture flows, an India-specific calculator, and a hybrid fitness chatbot that uses Gemini on the server when configured and falls back to a local expert mode when it is not.
 
-[![Live Site](https://img.shields.io/badge/Live-pravinelite--main.vercel.app-green?style=for-the-badge&logo=vercel)](https://pravinelite-main.vercel.app)
-[![Version](https://img.shields.io/badge/Version-2.0.0-gold?style=for-the-badge)](https://github.com/mangeshraut712/pravinelite/releases)
-[![Deployments](https://img.shields.io/badge/Deployments-Active-blue?style=for-the-badge&logo=vercel)](https://pravinelite-main.vercel.app)
-[![React](https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react)](https://react.dev)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.8-blue?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org)
+<p align="center">
+  <a href="https://pravinelitefit.com"><img src="https://img.shields.io/badge/Live-pravinelitefit.com-green?style=for-the-badge" alt="Live site"></a>
+  <img src="https://img.shields.io/badge/Version-2.0.0-gold?style=for-the-badge" alt="Version 2.0.0">
+  <img src="https://img.shields.io/badge/React-19-blue?style=for-the-badge&logo=react" alt="React 19">
+  <img src="https://img.shields.io/badge/TypeScript-5.8-blue?style=for-the-badge&logo=typescript" alt="TypeScript 5.8">
+</p>
+
+<p align="center">
+  <a href="https://pravinelitefit.com"><strong>Live site</strong></a>
+  &nbsp;·&nbsp;
+  <a href="https://github.com/mangeshraut712/pravinelite">Source</a>
+</p>
+
+<p align="center">
+  <img src="docs/screenshots/01-home.png" alt="Pravin Elite Fitness homepage" width="48%">
+  &nbsp;
+  <img src="docs/screenshots/02-feature.png" alt="India-specific BMI and TDEE calculator with results" width="48%">
+</p>
+
+<p align="center">
+  <sub>Homepage&nbsp;&nbsp;·&nbsp;&nbsp;Calculator</sub>
+</p>
 
 ## 🚀 2026 Tech Stack
 
@@ -117,7 +142,7 @@ A production-ready fitness website for Pravin Elite Fitness, built with React 19
 ```bash
 # Clone the repository
 git clone https://github.com/mangeshraut712/pravinelite.git
-cd pravinelite-main
+cd pravinelite
 
 # Install dependencies
 npm ci
@@ -327,6 +352,8 @@ Current performance bottleneck:
 
 © 2026 Pravin Elite Fitness. All rights reserved.
 
+**Last updated:** September 2026
+
 ## 📞 Contact
 
 - **Phone**: +91 92724 32562
@@ -337,7 +364,7 @@ Current performance bottleneck:
 
 ## 🌐 Live Demo
 
-[https://pravinelite-main.vercel.app](https://pravinelite-main.vercel.app)
+[https://pravinelitefit.com](https://pravinelitefit.com)
 
 ## 🙏 Acknowledgments
 
