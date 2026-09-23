@@ -1,3 +1,15 @@
+
+function safeHttpUrl(value: string): string | null {
+  if (value.startsWith("/") && !value.startsWith("//")) return value;
+  try {
+    const url = new URL(value);
+    if (url.protocol === "https:" || url.protocol === "http:") return url.toString();
+  } catch {
+    return null;
+  }
+  return null;
+}
+
 import React, { useEffect, useRef, useState } from "react";
 import { MessageSquareText, Send, X, Dumbbell, Sparkles, Loader2, Compass } from "lucide-react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
@@ -270,11 +282,13 @@ const MessageText = ({ text, onLinkClick }: MessageTextProps) => {
     const [fullMatch, linkText, href] = linkMatch;
     const matchIndex = linkMatch.index;
 
-    const isExternal = href.startsWith("http");
+    const safeHref = safeHttpUrl(href);
+    if (!safeHref) continue;
+    const isExternal = safeHref.startsWith("http");
     const element = isExternal ? (
       <a
         key={`link-${matchIndex}`}
-        href={href}
+        href={safeHref}
         target="_blank"
         rel="noopener noreferrer"
         className="text-gold font-medium hover:underline inline-flex items-center gap-0.5"
@@ -284,7 +298,7 @@ const MessageText = ({ text, onLinkClick }: MessageTextProps) => {
     ) : (
       <Link
         key={`link-${matchIndex}`}
-        to={href}
+        to={safeHref}
         className="text-gold font-semibold hover:underline inline-flex items-center gap-0.5"
         onClick={onLinkClick} // Close chatbot window when routing internally
       >
