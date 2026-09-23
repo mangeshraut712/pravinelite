@@ -5,7 +5,6 @@ import { Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
 import { useIsMobile } from "@/hooks/use-mobile";
 
-
 function safeHttpUrl(value: string): string | null {
   if (value.startsWith("/") && !value.startsWith("//")) return value;
   try {
