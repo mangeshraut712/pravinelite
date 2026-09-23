@@ -1,3 +1,10 @@
+import React, { useEffect, useRef, useState } from "react";
+import { MessageSquareText, Send, X, Dumbbell, Sparkles, Loader2, Compass } from "lucide-react";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { Link } from "@tanstack/react-router";
+import { useQuery } from "@tanstack/react-query";
+import { useIsMobile } from "@/hooks/use-mobile";
+
 
 function safeHttpUrl(value: string): string | null {
   if (value.startsWith("/") && !value.startsWith("//")) return value;
@@ -9,13 +16,6 @@ function safeHttpUrl(value: string): string | null {
   }
   return null;
 }
-
-import React, { useEffect, useRef, useState } from "react";
-import { MessageSquareText, Send, X, Dumbbell, Sparkles, Loader2, Compass } from "lucide-react";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { Link } from "@tanstack/react-router";
-import { useQuery } from "@tanstack/react-query";
-import { useIsMobile } from "@/hooks/use-mobile";
 
 // Types for chat messages
 interface Message {
@@ -285,10 +285,20 @@ const MessageText = ({ text, onLinkClick }: MessageTextProps) => {
     const safeHref = safeHttpUrl(href);
     if (!safeHref) continue;
     const isExternal = safeHref.startsWith("http");
+    let externalHref = "";
+    if (isExternal) {
+      try {
+        const url = new URL(safeHref);
+        if (url.protocol !== "http:" && url.protocol !== "https:") continue;
+        externalHref = url.href;
+      } catch {
+        continue;
+      }
+    }
     const element = isExternal ? (
       <a
         key={`link-${matchIndex}`}
-        href={safeHref}
+        href={externalHref}
         target="_blank"
         rel="noopener noreferrer"
         className="text-gold font-medium hover:underline inline-flex items-center gap-0.5"
