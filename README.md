@@ -23,15 +23,21 @@ A production-ready fitness website for Pravin Elite Fitness, built with React 19
   <a href="https://github.com/mangeshraut712/pravinelite">Source</a>
 </p>
 
-<p align="center">
-  <img src="docs/screenshots/01-home.png" alt="Pravin Elite Fitness homepage" width="48%">
-  &nbsp;
-  <img src="docs/screenshots/02-feature.png" alt="India-specific BMI and TDEE calculator with results" width="48%">
-</p>
+## Screenshots
 
-<p align="center">
-  <sub>Homepage&nbsp;&nbsp;·&nbsp;&nbsp;Calculator</sub>
-</p>
+Framed captures of the live app (current UI). Copy names real surfaces only — no invented metrics.
+
+<div align="center">
+
+<img src="docs/screenshots/01-home.webp" alt="Pravin Elite Fitness home: train in Pune, eat real food" width="720" />
+
+<img src="docs/screenshots/02-calculator.webp" alt="India-specific BMI and macro calculator form" width="720" />
+
+<img src="docs/screenshots/03-services.webp" alt="Training services: gym, home, and online" width="720" />
+
+<img src="docs/screenshots/04-programs.webp" alt="Program pricing: 45-day, 90-day, and nutrition" width="720" />
+
+</div>
 
 ## 🚀 2026 Tech Stack
 
